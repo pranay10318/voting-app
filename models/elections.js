@@ -10,8 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Elections.belongsTo(models.Admin, {
-        //todo belongs to a Admin
         foreignKey: "adminId",
+      });
+      Elections.hasMany(models.Questions, {
+        foreignKey: "electionId",
+      });
+      Elections.hasMany(models.Voters, {
+        foreignKey: "electionId",
       });
     }
     static addElection({ title, adminId }) {

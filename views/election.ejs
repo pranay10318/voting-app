@@ -5,25 +5,11 @@
     
     <% for(var i=0;i<data.length;i++) { %>
       <li >
-        <div
-          class="flex items-center w-fit my-2 px-2 py-1 hover:bg-green-100 rounded"
-        >
-          <input
-            type="checkbox"
-            id="todo-checkbox-<%=data[i].id  %>"
-            <%= data[i].completed ? "checked":"" %> 
-            onClick="updateTodo(<%= data[i].id %>,<%= data[i].completed %>)"
-            class="w-4 h-4 text-blue-300 bg-gray-600 border-gray"
-          />
-          <label
-            for="todo-checkbox-<%=data[i].id  %>"
-            class="ml-2 text-sm text-gray-600 hover:cursor-pointer"
-          >
+        <div class="flex items-center w-fit my-2 px-2 py-1 hover:bg-green-100 rounded">
+          <a href="/elections/<%= data[i].id %>/" class="ml-2 text-sm text-gray-600 hover:cursor-pointer">
             <%= data[i].name%>
-          </label>
-          <a href="" class="hidden ml-2 trash-icon"  onClick="deleteTodo(`<%= data[i].id %>`)"    >
-              <button>edt</button>
           </a>
+        
         </div>
       </li>
       <% } %>
