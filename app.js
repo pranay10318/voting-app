@@ -85,8 +85,13 @@ passport.deserializeUser((id, done) => {
 //passport part ,session creation end.
 
 app.get("/", async (request, response) => {
+  var bul = false;
+  if (request.user) {
+    bul = true;
+  }
   response.render("index", {
-    title: "Todo Application",
+    title: "online Voting Application",
+    loginStatus: bul,
     csrfToken: request.csrfToken(),
   });
 });
@@ -115,24 +120,28 @@ app.get(
     }
   }
 );
-app.get("/welcome", async (request, response) => {
-  const loggedInadmin = request.user.id;
-  const allElections = await Elections.getElections(loggedInadmin);
+app.get(
+  "/welcome",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const loggedInadmin = request.user.id;
+    const allElections = await Elections.getElections(loggedInadmin);
 
-  if (request.accepts("html")) {
-    response.render("welcome", {
-      title: "My Elections",
-      name: request.user.firstName,
-      allElections,
-      csrfToken: request.csrfToken(),
-    });
-  } else {
-    //for postman like api  we should get json format as it donot support html
-    response.json({
-      allElections,
-    });
+    if (request.accepts("html")) {
+      response.render("welcome", {
+        title: "My Elections",
+        name: request.user.firstName,
+        allElections,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      //for postman like api  we should get json format as it donot support html
+      response.json({
+        allElections,
+      });
+    }
   }
-});
+);
 
 app.post("/admins", async function (request, response) {
   if (request.body.firstName.length == 0) {
@@ -147,6 +156,15 @@ app.post("/admins", async function (request, response) {
   }
   console.log("creating new User", request.body);
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  var bl = await Admin.findOne({
+    where: {
+      email: request.body.email,
+    },
+  });
+  if (bl != null) {
+    request.flash("error", "Email already Exists");
+    return response.redirect("/signup");
+  }
   try {
     const admin = await Admin.create({
       firstName: request.body.firstName,
@@ -233,15 +251,19 @@ app.get(
   }
 );
 
-app.get("/questions", (request, response) => {
-  response.render("questions.ejs");
-});
+app.get(
+  "/questions",
+  connectEnsureLogin.ensureLoggedIn(),
+  (request, response) => {
+    response.render("questions.ejs");
+  }
+);
 
-app.get("/voters", (request, response) => {
+app.get("/voters", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
   response.render("voters.ejs");
 });
 
-app.get("/launch", (request, response) => {
+app.get("/launch", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
   response.render("launch.ejs");
 });
 
