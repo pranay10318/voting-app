@@ -2,7 +2,14 @@
 const express = require("express");
 var csrf = require("tiny-csrf");
 const app = express();
-const { Elections, Todo, Admin } = require("./models"); //for doing any operations on todo we should import models
+const {
+  Elections,
+  Todo,
+  Admin,
+  Questions,
+  Answers,
+  Voters,
+} = require("./models"); //for doing any operations on todo we should import models
 const bodyParser = require("body-parser"); //for parsing from/to json
 var cookieParser = require("cookie-parser");
 const path = require("path");
@@ -241,6 +248,7 @@ app.get(
     try {
       const election = await Elections.findByPk(request.params.id);
       response.render("election-create", {
+        electionId: request.params.id,
         election,
         csrfToken: request.csrfToken(),
       });
@@ -252,20 +260,136 @@ app.get(
 );
 
 app.get(
-  "/questions",
+  "/elections/:id/questions",
   connectEnsureLogin.ensureLoggedIn(),
-  (request, response) => {
-    response.render("questions.ejs");
+  async (request, response) => {
+    try {
+      var questions = await Questions.findAll({
+        where: {
+          electionId: request.params.id,
+        },
+      });
+      // here we need to add options too   but as of now not needed
+      response.render("questions.ejs", {
+        electionId: request.params.id,
+        questions: questions,
+        title: "Your Questions..!",
+        email: request.user.email,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+app.post(
+  "/elections/:id/questions",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.body.title.length == 0) {
+      request.flash("error", "Enter the title");
+      return response.redirect(`/elections/${request.params.id}/questions`);
+    }
+    if (request.body.description.length == 0) {
+      request.flash("error", "Enter a short description");
+      return response.redirect(`/elections/${request.params.id}/questions`);
+    }
+    try {
+      await Questions.addQuestion({
+        title: request.body.title,
+        description: request.body.description,
+        electionId: request.params.id,
+      });
+      console.log("dfadfadsfasd.................", request.body);
+      const loggedInadmin = request.user.id;
+      const allElections = await Elections.findOne({
+        where: {
+          adminId: loggedInadmin,
+        },
+        order: [["id", "DESC"]],
+      });
+      console.log("......................al id.......", allElections);
+
+      return response.redirect(`/elections/${request.params.id}/questions`);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
   }
 );
 
-app.get("/voters", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
-  response.render("voters.ejs");
-});
+// app.get("/voters", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
+//   response.render("voters.ejs");
+// });
 
-app.get("/launch", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
-  response.render("launch.ejs");
-});
+app.get(
+  "/elections/:id/voters",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      var voters = await Voters.findAll({
+        where: {
+          electionId: request.params.id,
+        },
+      });
+      // here we need to add options too   but as of now not needed
+      response.render("voters.ejs", {
+        electionId: request.params.id,
+        voters: voters,
+        title: "Your voters..!",
+        email: request.user.email,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+app.post(
+  "/elections/:id/voters",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.body.name.length == 0) {
+      request.flash("error", "Enter name!!");
+      return response.redirect(`/elections/${request.params.id}/voters`);
+    }
+    if (request.body.password.length == 0) {
+      request.flash("error", "Enter access key!!");
+      return response.redirect(`/elections/${request.params.id}/voters`);
+    }
+    try {
+      await Voters.addVoter({
+        title: request.body.name,
+        password: request.body.password,
+        electionId: request.params.id,
+      });
+      console.log("dfadfadsfasd.................", request.body);
+      const loggedInadmin = request.user.id;
+      const allElections = await Elections.findOne({
+        where: {
+          adminId: loggedInadmin,
+        },
+        order: [["id", "DESC"]],
+      });
+      console.log("......................al id.......", allElections);
+
+      return response.redirect(`/elections/${request.params.id}/voters`);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.get(
+  "/elections/:id/launch",
+  connectEnsureLogin.ensureLoggedIn(),
+  (request, response) => {
+    response.render("launch.ejs");
+  }
+);
 
 app.get("/signup", (request, response) => {
   response.render("signup", {

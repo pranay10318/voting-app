@@ -13,6 +13,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "electionId",
       });
     }
+    static addVoter({ title, password, electionId }) {
+      //refactoring for business logic and we can add a todo at any endpoint
+      return this.create({
+        name: title,
+        password,
+        electionId,
+      }); //userId shorthand property  for attribut and value same in javascript
+    }
+    static getVoters(electionId) {
+      return this.findAll({
+        where: {
+          electionId,
+        },
+      }); //from sequelize package  donot confuse bro
+    }
   }
   Voters.init(
     {
