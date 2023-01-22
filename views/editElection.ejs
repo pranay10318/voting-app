@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <link href="./css/styles.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title><%= title%></title>
+    <script>
+      var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+        function ele(id) {
+        console.log(
+          "function is called............................................."
+        );
+        var name = election.name;
+        fetch(`/elections/${id}/editElection`, {
+          method: "put",
+          headers: { "content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name,
+            _csrf: token,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => console.error(err));
+      };
+    </script>
+  </head>
+  <body>
+    <div class="grid grid-cols-6">
+      <div class="col-start-3 col-span-2">
+        <%- include("header.ejs")%>
+        <h1>Update your Election ..</h1>
+        <br />
+        <a
+          href="/signout"
+          class="bg-red-600 text-white px-2 py-5 rounded font-mediium py-1.5"
+          >Sign out</a
+        >
+        <div class="py-3">
+          <input
+            type="text"
+            name="ip"
+            class="border border-color-gray-300 text-gray-900 rounded w-full p-2 text-sm"
+            value="<%= election.name %>"
+          />
+          &nbsp;&nbsp;&nbsp;
+          <button
+            onclick="ele(`<%= election.id%>`)"
+            class="ml-2 text-sm text-red-600 hover:cursor-pointer"
+          >
+            UPDATE
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

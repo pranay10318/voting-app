@@ -4,33 +4,50 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     <link href="./css/styles.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
 
     <title><%= title%></title>
     <script>
-var token = document
+      var token = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-      const goelection= (id) => {
-        //here we are taking checked attribute from election.ejs
-        console.log("the id is>>>>>>>>>>>>>>>>>>",id);
+      // const updateTodo = (id, bool) => {
+      //   //here we are taking checked attribute from todo.ejs
+      //   console.log(bool);
+      //   fetch(`/elections/${id}`, {
+      //     method: "put",
+      //     headers: { "content-Type": "application/json" },
+      //     body: JSON.stringify({
+      //       //for it we are needed to pass the completion status
+      //       completed: !bool,
+      //       _csrf: token,
+      //     }),
+      //   })
+      //     .then((res) => {
+      //       if (res.ok) {
+      //         window.location.reload();
+      //       }
+      //     })
+      //     .catch((err) => console.error(err));
+      // };
+      function deleteElection(id) {
         fetch(`/elections/${id}`, {
-          method: "get",
-          headers: { "content-Type": "application/json" },
+          //url to make the to as completed after that we need to reload   headers and body can also be placed
+          method: "delete",
+          headers: { "Content-type": "application/json" },
           body: JSON.stringify({
-            //for it we are needed to pass the completion status
             _csrf: token,
           }),
-        }).then((res) => {
+        })
+          .then((res) => {
             if (res.ok) {
-              window.location("election-create");
+              window.location.reload();
             }
           })
-          .catch((err) => console.error(err));
-      };
-
-
+          .catch((err) => console.error(err)); //o/p error to the console
+      }
     </script>
   </head>
   <body>
@@ -43,8 +60,10 @@ var token = document
           class="bg-red-600 text-white px-2 py-5 rounded font-mediium py-1.5"
           >Sign out</a
         >
-        <h1 class="text-xl mt-5 bg-blue-100 rounded">
-          <a href="/elections" class="ml-2">create a new election</a>
+        <h1 class="text-xl mt-5 bg-blue-100 rounded w-fit pr-4">
+          <button class="ml-2 text-xls text-red-600 hover:cursor-pointer w-fit">
+            <a href="/elections" class="ml-2">create a new election</a>
+          </button>
         </h1>
         <div class="mt-10">
           <%-include("election.ejs",{title:"My Elections",data:allElections})%>

@@ -31,14 +31,13 @@
           })
           .catch((err) => console.error(err));
       };
-      function deleteQuestion(id) {
-        console.log("entered..");
-        fetch(`/questions/${id}`, {
+      function deleteAnswer(id) {
+        fetch(`/answers/${id}`, {
           //url to make the to as completed after that we need to reload   headers and body can also be placed
           method: "delete",
           headers: { "Content-type": "application/json" },
           body: JSON.stringify({
-            electionId:`<%= electionId%>`,
+            questionId:`<%= questionId%>`,
             _csrf: token,
           }),
         })
@@ -55,25 +54,20 @@
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
         <%- include('header.ejs') %>
-        <h1 class=" font-bold mb-5">USER : <%= email  %> </h1>
         <a href="/signout" class="bg-red-600 text-white px-2 py-5 rounded font-mediium py-1.5">Sign out</a>
-        <form action="/elections/<%= electionId%>/questions" method="post">
+        <h1 class="text-red-700 text-xl"><%= question.title%></h1>
+        <h2><%= question.description%></h2>
+        <form action="/questions/<%= question.id%>/answer" method="post">
           <div class="flex gap-2 py-4">
             <div class="flex-auto">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
               <input
                 type="text"
-                placeholder="create your next question.!"
+                placeholder="create your next answer.!"
                 name="title"
                 class="border border-color-gray-300 text-gray-900 rounded w-full p-2 text-sm"
               />
               </div>
-              <div class="flex-auto">
-              <input type="text" placeholder="enter a short description" class="border border-color-gray-300 text-gray-900 rounded w-full p-2 text-sm hover:cursor" name="description"/>
-            </div>
-            <div>
-                
-            </div>
             <div class="flex-none">
               <input
                 type="submit"
@@ -84,8 +78,8 @@
             </div>
           </div>
         </form>
-        <%- include("question.ejs",{
-            title:title,data:questions,
+        <%- include("questionDetails.ejs",{
+            title:"Your Options..!",data:answers,
         }) %>
         <ul><% if(messages && messages.error && messages.error.length > 0)  { %>
           <% for(var i=0; i<messages.error.length; i++) { %>

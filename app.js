@@ -113,7 +113,7 @@ app.get(
     if (request.accepts("html")) {
       //request from web i.e. it accepts html   but for postman it accepts json that is in else part
       response.render("elections", {
-        //new todos.ejs should be created
+        //new elections.ejs should be created
         title: "my Elections",
         email: request.user.email,
         allElections,
@@ -260,6 +260,28 @@ app.get(
 );
 
 app.get(
+  "/questionsDetails/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    //async for getting req
+    try {
+      const question = await Questions.findByPk(request.params.id);
+      const answers = await Answers.getAnswers(request.params.id);
+      response.render("manageQuestion", {
+        title: "Manage Questions",
+        question,
+        questionId: request.params.id,
+        answers,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.get(
   "/elections/:id/questions",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
@@ -319,6 +341,36 @@ app.post(
   }
 );
 
+app.post(
+  "/questions/:id/answer",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    var c = await Answers.count({
+      where: {
+        questionId: request.params.id,
+      },
+    });
+    if (c == 4) {
+      request.flash("error", "Only 4 options are allowed for a question..!");
+      return response.redirect(`/questionsDetails/${request.params.id}`);
+    }
+    if (request.body.title.length == 0) {
+      request.flash("error", "Please enter the answer..!");
+      return response.redirect(`/questionsDetails/${request.params.id}`);
+    }
+    try {
+      await Answers.addAnswer({
+        title: request.body.title,
+        questionId: request.params.id,
+      });
+
+      return response.redirect(`/questionsDetails/${request.params.id}`);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
 // app.get("/voters", connectEnsureLogin.ensureLoggedIn(), (request, response) => {
 //   response.render("voters.ejs");
 // });
@@ -416,19 +468,40 @@ app.get("/signout", (request, response, next) => {
   });
 });
 
+app.get(
+  "/elections/:id/editElection",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const election = await Elections.findByPk(request.params.id);
+      response.render("editElection", {
+        title: "editElection",
+        electionId: request.params.id,
+        election,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
 app.put(
-  "/todos/:id",
+  "/elections/:id/editElection",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     const loggedInUser = request.user.id;
     console.log("we have to update a todo with ID:", request.params.id);
     try {
-      const todo = await Todo.findByPk(request.params.id);
-      const updatedTodo = await todo.setCompletionStatus(
-        request.body.completed, //this part we are passing in index.js body attribute
+      const election = await Elections.findByPk({
+        where: { id: request.params.id },
+      });
+      const updatedElection = await Elections.editElectionName(
+        request.body.name, //this part we are passing in index.js body attribute
         loggedInUser
       );
-      return response.json(updatedTodo);
+      return response.json(updatedElection);
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -437,17 +510,59 @@ app.put(
 );
 
 app.delete(
-  "/todos/:id",
+  "/elections/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    console.log("We have to delete a election with ID: ", request.params.id);
+    // FILL IN YOUR CODE HERE
+    try {
+      //this code is by them i.e. wd   my code is below
+      var c = await Elections.deleteElection(
+        request.params.id,
+        request.user.id
+      );
+      if (c) console.log("deleted successfully");
+      else console.log("unsuccesss");
+      return response.json({ success: true });
+    } catch (error) {
+      return response.status(422).json(error);
+    }
+  }
+);
+app.delete(
+  "/questions/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     console.log("We have to delete a Todo with ID: ", request.params.id);
     // FILL IN YOUR CODE HERE
     try {
       //this code is by them i.e. wd   my code is below
-      await Todo.remove({
+      var c = await Questions.deleteQuestion({
         id: request.params.id,
-        userId: request.user.id,
+        electionId: request.body.electionId,
       });
+      if (c) console.log("deleted successfully");
+      else console.log("unsuccesss");
+      return response.json({ success: true });
+    } catch (error) {
+      return response.status(422).json(error);
+    }
+  }
+);
+app.delete(
+  "/answers/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    console.log("We have to delete a Todo with ID: ", request.params.id);
+    // FILL IN YOUR CODE HERE
+    try {
+      //this code is by them i.e. wd   my code is below
+      var c = await Answers.deleteAnswer({
+        id: request.params.id,
+        questionId: request.body.questionId,
+      });
+      if (c) console.log("deleted successfully");
+      else console.log("unsuccesss");
       return response.json({ success: true });
     } catch (error) {
       return response.status(422).json(error);

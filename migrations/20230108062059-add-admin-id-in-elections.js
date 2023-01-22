@@ -12,6 +12,7 @@ module.exports = {
         table: "Admins",
         field: "id",
       },
+      onDelete: "CASCADE",
     });
   },
 

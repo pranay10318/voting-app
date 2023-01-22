@@ -12,6 +12,7 @@ module.exports = {
         table: "Questions",
         field: "id",
       },
+      onDelete: "CASCADE",
     });
   },
 

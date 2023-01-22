@@ -12,6 +12,28 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "questionId",
       });
     }
+
+    static getAnswers(questionId) {
+      return this.findAll({
+        where: {
+          questionId,
+        },
+      });
+    }
+    static addAnswer({ title, questionId }) {
+      return this.create({
+        title,
+        questionId,
+      });
+    }
+    static deleteAnswer({ id, questionId }) {
+      return this.destroy({
+        where: {
+          id,
+          questionId,
+        },
+      });
+    }
   }
   Answers.init(
     {

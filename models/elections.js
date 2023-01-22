@@ -33,6 +33,26 @@ module.exports = (sequelize, DataTypes) => {
         },
       }); //from sequelize package  donot confuse bro
     }
+    static deleteElection(id, adminId) {
+      return this.destroy({
+        where: {
+          id: id,
+          adminId,
+        },
+      });
+    }
+
+    static editElectionName(id, adminId, name) {
+      return this.update(
+        { name: name },
+        {
+          where: {
+            id,
+            adminId,
+          },
+        }
+      );
+    }
   }
   Elections.init(
     {

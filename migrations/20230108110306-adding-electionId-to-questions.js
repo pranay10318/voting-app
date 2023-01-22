@@ -12,6 +12,7 @@ module.exports = {
         table: "Elections",
         field: "id",
       },
+      onDelete: "CASCADE",
     });
     /**
      * Add altering commands here.

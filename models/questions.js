@@ -25,6 +25,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+    static deleteQuestion({ id, electionId }) {
+      return this.destroy({
+        where: {
+          id,
+          electionId,
+        },
+      });
+    }
   }
   Questions.init(
     {
