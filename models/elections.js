@@ -53,10 +53,22 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+    static startElection(id) {
+      return this.update(
+        { started: true },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    }
   }
   Elections.init(
     {
       name: DataTypes.STRING,
+      started: DataTypes.BOOLEAN,
+      status: DataTypes.BOOLEAN,
     },
     {
       sequelize,

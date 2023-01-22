@@ -1,0 +1,27 @@
+<Ul Class="Election">
+<% 
+for(var i=0;i<questions.length;i++){%>
+    <Li>
+        <H1 class="text-red-600"><%= questions[i].title%></H1>
+        <Ul >
+
+<%    
+    for(var j=0;j<answers.length;j++)
+    {
+        if(answers[j].questionId == questions[i].id){
+%>
+            <li >
+                <Label>
+                    <Input Type="Radio" Name="answer<%= questions[i].id%>" id="<%= answers[j].id%>" Value="A" />
+                    <Span><%= answers[j].title%></Span>
+                </Label>
+            </li>
+<%
+        }
+    }
+%>
+        </Ul></Li>
+<%
+}
+
+%> </Ul>

@@ -11,6 +11,7 @@
               <%= data[i].name%>
             </h1>
           </div>
+          <% if(!data[i].started) {%> 
           <div class="flex-auto">
             <a href="/elections/<%= data[i].id %>/" class="ml-2 text-sm text-purple-600 hover:cursor-pointer">
               Manage
@@ -21,7 +22,30 @@
               Delete
             </button>
           </div>
-          
+          <% }else if(!data[i].status){ %> 
+            <div class="flex-auto">
+              <a href="/elections/<%= data[i].id %>/" class="ml-2 text-sm text-purple-600 hover:cursor-pointer">
+                PreviewResults
+              </a>
+            </div>
+            <div class="flex-auto">
+              <a href="/elections/<%= data[i].id %>/" class="ml-2 text-sm text-red-600 hover:cursor-pointer">
+                End
+              </a>
+            </div>
+            <% }else{ %> 
+              <div class="flex-auto">
+                <a href="/elections/<%= data[i].id %>/" class="ml-2 text-sm text-purple-600 hover:cursor-pointer">
+                  Delete
+                </a>
+              </div>
+              <div class="flex-auto">
+                <a href="/elections/<%= data[i].id %>/" class="ml-2 text-sm text-purple-600 hover:cursor-pointer">
+                  ViewResults
+                </a>
+              </div>
+              
+              <% } %> 
         
         </div>
       </li>

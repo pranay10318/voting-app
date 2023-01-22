@@ -438,8 +438,66 @@ app.post(
 app.get(
   "/elections/:id/launch",
   connectEnsureLogin.ensureLoggedIn(),
-  (request, response) => {
-    response.render("launch.ejs");
+  async (request, response) => {
+    try {
+      const id = request.params.id;
+      const election = await Elections.findByPk(id);
+      // here we need to add options too   but as of now not needed
+      const questionsCount = await Questions.count({
+        where: {
+          electionId: id,
+        },
+      });
+      const questions = await Questions.findAll({
+        where: {
+          electionId: id,
+        },
+      });
+      const answers = await Answers.findAll();
+      if (questionsCount == 0) {
+        request.flash(
+          "error",
+          "election cannot be launched without minimum number of questions"
+        );
+        return response.redirect(`/elections/${id}`);
+      } else {
+        var flag = 0;
+        for (var i = 0; i < questions.length; i++) {
+          const cnt = await Answers.count({
+            where: {
+              questionId: questions[i].id,
+            },
+          });
+          if (cnt < 2) {
+            flag = 1;
+            request.flash(
+              "error",
+              "election cannot be launched please make sure every question has two or more options"
+            );
+            return response.redirect(`/elections/${id}`);
+          }
+        }
+
+        if (flag == 0) {
+          const ress = await Elections.startElection(id);
+          if (ress) {
+            return response.render("launch.ejs", {
+              election,
+              questions,
+              answers,
+              title: "Preview Election",
+              csrfToken: request.csrfToken(),
+            });
+          }
+        } else {
+          request.flash("error", "launch cannot be done");
+          return response.redirect(`/elections/${id}`);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
   }
 );
 
@@ -570,4 +628,22 @@ app.delete(
   }
 );
 
+app.get(
+  "/questions/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const elections = await Elections.findAll(request.params.id);
+      response.render("list", {
+        title: "view Election",
+        electionId: request.params.id,
+        elections,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
 module.exports = app;

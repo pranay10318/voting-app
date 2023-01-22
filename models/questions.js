@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "questionId",
       });
     }
-    static addQuestion({ title, description, electionId }) {
+    static async addQuestion({ title, description, electionId }) {
       //refactoring for business logic and we can add a todo at any endpoint
       return this.create({
         title,
@@ -18,14 +18,14 @@ module.exports = (sequelize, DataTypes) => {
         electionId,
       }); //userId shorthand property  for attribut and value same in javascript
     }
-    static getQuestions(electionId) {
+    static async getQuestions(electionId) {
       return this.findAll({
         where: {
           electionId,
         },
       });
     }
-    static deleteQuestion({ id, electionId }) {
+    static async deleteQuestion({ id, electionId }) {
       return this.destroy({
         where: {
           id,

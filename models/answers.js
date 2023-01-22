@@ -13,20 +13,20 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static getAnswers(questionId) {
+    static async getAnswers(questionId) {
       return this.findAll({
         where: {
           questionId,
         },
       });
     }
-    static addAnswer({ title, questionId }) {
+    static async addAnswer({ title, questionId }) {
       return this.create({
         title,
         questionId,
       });
     }
-    static deleteAnswer({ id, questionId }) {
+    static async deleteAnswer({ id, questionId }) {
       return this.destroy({
         where: {
           id,
