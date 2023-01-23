@@ -500,6 +500,34 @@ app.get(
     }
   }
 );
+app.get(
+  "/elections/:id/end",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const id = request.params.id;
+      const election = await Elections.findByPk(id);
+      if (election.status == false) {
+        const ress = Elections.update(
+          { status: true },
+          {
+            where: {
+              id,
+            },
+          }
+        );
+        if (ress) return response.redirect(`/welcome`);
+        else {
+          request.flash("error", "ending cannot be done");
+          return response.redirect(`/welcome`);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
 
 app.get("/signup", (request, response) => {
   response.render("signup", {
