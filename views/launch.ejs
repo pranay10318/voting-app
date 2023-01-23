@@ -52,14 +52,12 @@
   <body>
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
-        <%- include('header.ejs') %><h1 class="font-medium"><%=election.title%></h1>
-        <button class="bg-red-600 text-white px-2 py-1 rounded font-mediium mb-10"><a href="/signout" >Sign out</a></button>
-        
-        <form action="/elections" method="post">
+        <b><h1 class="text-purple-700 text-3xl"><%=election.name%></h1></b>
+        <form action="/result/<%= voterId%>" method="get">
           <div class="flex gap-2 py-4">
             <%- include('list.ejs',{election,questions,answers}) %>
           </div>
-          <input type="submit" value="CastVote" class="bg-gray-600 text-white px-2 py-1 rounded font-mediium mb-10"/>
+          <input type="submit" value="CastVote" class="bg-gray-600 text-white px-2 py-1 rounded font-mediium mb-10 hover:cursor-pointer"/>
         </form>
         <ul><% if(messages && messages.error && messages.error.length > 0)  { %>
           <% for(var i=0; i<messages.error.length; i++) { %>

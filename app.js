@@ -454,10 +454,21 @@ app.get(
         },
       });
       const answers = await Answers.findAll();
+      const votersCount = await Voters.count({
+        where: {
+          electionId: id,
+        },
+      });
       if (questionsCount == 0) {
         request.flash(
           "error",
           "election cannot be launched without minimum number of questions"
+        );
+        return response.redirect(`/elections/${id}`);
+      } else if (votersCount == 0) {
+        request.flash(
+          "error",
+          "election cannot be launched without minimum number of voters"
         );
         return response.redirect(`/elections/${id}`);
       } else {
@@ -481,13 +492,18 @@ app.get(
         if (flag == 0) {
           const ress = await Elections.startElection(id);
           if (ress) {
-            return response.render("launch.ejs", {
-              election,
-              questions,
-              answers,
-              title: "Preview Election",
-              csrfToken: request.csrfToken(),
-            });
+            // return response.render("launch.ejs", {
+            //   election,
+            //   questions,
+            //   answers,
+            //   title: "Preview Election",
+            //   csrfToken: request.csrfToken(),
+            // });
+            request.flash(
+              "error",
+              `election launched succesfully at  http://localhost:3000/voter-login/${election.id}/${election.name}`
+            );
+            return response.redirect(`/elections/${id}`);
           }
         } else {
           request.flash("error", "launch cannot be done");
@@ -674,4 +690,102 @@ app.get(
     }
   }
 );
+app.get("/voter-login/:id/:election", async (request, response) => {
+  const id = request.params.id;
+  const election = await Elections.findByPk(id);
+  response.render("voter-login.ejs", {
+    title: "Voter LogIn",
+    election,
+    csrfToken: request.csrfToken(),
+  });
+});
+app.post("/voter-login/:id/:election", async (request, response) => {
+  const name = request.body.id;
+  const password = request.body.password;
+  const voter = await Voters.findOne({
+    where: {
+      name,
+      password,
+    },
+  });
+
+  if (!voter) {
+    request.flash("error", "Invalid details..");
+    return response.redirect(
+      `/voter-login/${request.params.id}/${request.params.election}`
+    );
+  }
+  console.log("statuasssssssssss.................", voter.status);
+  if (voter.status) {
+    request.flash("error", "you're response was already submitted..");
+    return response.redirect(
+      `/voter-login/${request.params.id}/${request.params.election}`
+    );
+  }
+  return response.redirect(
+    `/conduct-election/${request.params.id}/${request.params.election}/${voter.id}`
+  );
+});
+
+app.get("/conduct-election/:id/:election/:vid", async (request, response) => {
+  const id = request.params.id;
+  try {
+    const questions = await Questions.findAll({
+      where: {
+        electionId: id,
+      },
+    });
+    const election = await Elections.findByPk(id);
+    const answers = await Answers.findAll();
+    response.render("launch", {
+      title: election.name,
+      electionId: id,
+      election,
+      voterId: request.params.vid,
+      answers,
+      questions,
+      csrfToken: request.csrfToken(),
+    });
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+app.get(
+  "/elections/:id/preview",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const id = request.params.id;
+      const election = await Elections.findByPk(id);
+      const questions = await Questions.findAll({
+        where: {
+          electionId: id,
+        },
+      });
+      const answers = await Answers.findAll();
+      return response.render("viewElection.ejs", {
+        election,
+        questions,
+        answers,
+        title: "Preview Election",
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+app.get("/result/:id", async (request, response) => {
+  const ress = await Voters.update(
+    { status: true },
+    {
+      where: {
+        id: request.params.id,
+      },
+    }
+  );
+  response.render("result.ejs");
+});
 module.exports = app;

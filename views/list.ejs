@@ -1,9 +1,9 @@
-<Ul Class="Election">
+<ul Class="Election">
 <% 
 for(var i=0;i<questions.length;i++){%>
-    <Li>
-        <H1 class="text-red-600"><%= questions[i].title%></H1>
-        <Ul >
+    <li>
+        <h1 class="text-red-600"><%= questions[i].title%></h1>
+        <ul >
 
 <%    
     for(var j=0;j<answers.length;j++)
@@ -20,8 +20,8 @@ for(var i=0;i<questions.length;i++){%>
         }
     }
 %>
-        </Ul></Li>
+        </ul></li>
 <%
 }
 
-%> </Ul>
+%> </ul>
