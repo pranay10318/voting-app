@@ -51,10 +51,18 @@
       }
     </script>
   </head>
-  <body>
+  <body
+    style="
+      background-color: beige;
+      font-family: 'Courier New', Courier, monospace;
+    "
+  >
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
         <%- include('header.ejs') %>
+        <h1 class="text-blue-700 font-bold text-1.2xl bg-gray-100 w-fit pr-1">
+          /<a href="/">Home</a>/<a href="/welcome">Elections</a>/<a href="/elections/<%=electionId%>">Manage-Election</a>/<a href="/elections/<%=electionId%>/Questions">Manage-Questions</a>
+        </h1>
         <h1 class=" font-bold mb-5">USER : <%= email  %> </h1>
         <a href="/signout" class="bg-red-600 text-white px-2 py-5 rounded font-mediium py-1.5">Sign out</a>
         <form action="/elections/<%= electionId%>/questions" method="post">
@@ -77,7 +85,7 @@
             <div class="flex-none">
               <input
                 type="submit"
-                class="bg-green-600 text-white px-5 py-2 rounded font-mediium py-1.5"
+                class="bg-green-600 text-white px-5 py-2 rounded font-mediium py-1.5 hover:cursor-pointer"
                 value="ADD"
               >
                 

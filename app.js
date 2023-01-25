@@ -260,16 +260,18 @@ app.get(
 );
 
 app.get(
-  "/questionsDetails/:id",
+  "/questionsDetails/:id/:eid",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     //async for getting req
     try {
       const question = await Questions.findByPk(request.params.id);
       const answers = await Answers.getAnswers(request.params.id);
+
       response.render("manageQuestion", {
         title: "Manage Questions",
         question,
+        electionId: request.params.eid,
         questionId: request.params.id,
         answers,
         csrfToken: request.csrfToken(),
@@ -342,7 +344,7 @@ app.post(
 );
 
 app.post(
-  "/questions/:id/answer",
+  "/questions/:id/answer/:eid",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     var c = await Answers.count({
@@ -352,11 +354,11 @@ app.post(
     });
     if (c == 4) {
       request.flash("error", "Only 4 options are allowed for a question..!");
-      return response.redirect(`/questionsDetails/${request.params.id}`);
+      return response.redirect(`/questionsDetails/${request.params.id}/${request.params.eid}`);
     }
     if (request.body.title.length == 0) {
       request.flash("error", "Please enter the answer..!");
-      return response.redirect(`/questionsDetails/${request.params.id}`);
+      return response.redirect(`/questionsDetails/${request.params.id}/${request.params.eid}`);
     }
     try {
       await Answers.addAnswer({
@@ -364,7 +366,7 @@ app.post(
         questionId: request.params.id,
       });
 
-      return response.redirect(`/questionsDetails/${request.params.id}`);
+      return response.redirect(`/questionsDetails/${request.params.id}/${request.params.eid}`);
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -501,7 +503,7 @@ app.get(
             // });
             request.flash(
               "error",
-              `election launched succesfully at  http://localhost:3000/voter-login/${election.id}/${election.name}`
+              `election launched succesfully at  https://online-voting-app-oyt9.onrender.com/voter-login/${election.id}/${election.name}`
             );
             return response.redirect(`/elections/${id}`);
           }
@@ -706,6 +708,7 @@ app.post("/voter-login/:id/:election", async (request, response) => {
     where: {
       name,
       password,
+      electionId: request.params.id,
     },
   });
 
@@ -716,8 +719,8 @@ app.post("/voter-login/:id/:election", async (request, response) => {
     );
   }
   console.log("statuasssssssssss.................", voter.status);
-  if (voter.status) {
-    request.flash("error", "you're response was already submitted..");
+  if (voter.status === true) {
+    request.flash("error", "your response was already submitted..");
     return response.redirect(
       `/voter-login/${request.params.id}/${request.params.election}`
     );
@@ -735,6 +738,18 @@ app.get("/conduct-election/:id/:election/:vid", async (request, response) => {
         electionId: id,
       },
     });
+    const voter = await Voters.findOne({
+      where: {
+        id: request.params.vid,
+        electionId: request.params.id,
+      },
+    });
+    if (voter.status == true) {
+      request.flash("error", "your response was already submitted..");
+      return response.redirect(
+        `/voter-login/${request.params.id}/${request.params.election}`
+      );
+    }
     const election = await Elections.findByPk(id);
     const answers = await Answers.findAll();
     response.render("launch", {
@@ -787,5 +802,11 @@ app.get("/result/:id", async (request, response) => {
     }
   );
   response.render("result.ejs");
+});
+app.get("/elections/:id/viewResults", async (request, response) => {
+  response.render("viewResults");
+});
+app.get("/answer-edit/:aid",async(request,response)=>{
+  response.render("edit");
 });
 module.exports = app;

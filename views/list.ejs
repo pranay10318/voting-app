@@ -2,7 +2,8 @@
 <% 
 for(var i=0;i<questions.length;i++){%>
     <li>
-        <h1 class="text-red-600"><%= questions[i].title%></h1>
+        <b><h1 class="text-red-600 text-2xl font"><%= questions[i].title%></h1></b>
+        <h6 class="text-1.5xl text-gray-400 " align="right"> <%= questions[i].description%></h6>
         <ul >
 
 <%    

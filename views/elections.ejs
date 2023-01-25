@@ -54,6 +54,9 @@
       <div class="col-start-3 col-span-2">
         <%- include('header.ejs') %>
         <h1 class=" font-bold mb-5">USER : <%= email  %> </h1>
+        <h1 class="text-blue-700 font-bold text-1.2xl bg-gray-100 w-fit pr-1 gap-x-2">
+          <span>/</span><a href="/">Home</a><span>/</span><a href="/welcome">Elections</a>/<a href="/elections">Create-Election</a>
+        </h1>
         <a href="/signout" class="bg-red-600 text-white px-2 py-5 rounded font-mediium py-1.5">Sign out</a>
         <form action="/elections" method="post">
           <div class="flex gap-2 py-4">

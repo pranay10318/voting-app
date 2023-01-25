@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.addColumn("Elections", "started", {
       type: Sequelize.DataTypes.BOOLEAN,
-      defaultValue:false,
+      defaultValue: false,
     });
     await queryInterface.addColumn("Elections", "status", {
       type: Sequelize.DataTypes.BOOLEAN,
-      defaultValue:false,
+      defaultValue: false,
     });
     /**
      * Add altering commands here.
@@ -18,15 +18,15 @@ module.exports = {
      */
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.removeColumn("Elections", "status");
     await queryInterface.removeColumn("Elections", "started");
-    
+
     /**
      * Add reverting commands here.
      *
      * Example:
      * await queryInterface.dropTable('users');
      */
-  }
+  },
 };

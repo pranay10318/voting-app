@@ -50,14 +50,22 @@
       }
     </script>
   </head>
-  <body>
+  <body
+  style="
+    background-color: beige;
+    font-family: 'Courier New', Courier, monospace;
+  "
+>
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
         <%- include('header.ejs') %>
+        <h1 class="text-blue-700 font-bold text-1.2xl bg-gray-100 w-fit pr-1">
+          /<a href="/elections/<%=electionId%>">ManageElection</a>/<a href="/elections/<%=electionId%>/Questions">Manage-Questions</a>/<a href="/questionsDetails/<%= questionId%>/<%= electionId%>">Manage-Question</a>
+        </h1>
         <a href="/signout" class="bg-red-600 text-white px-2 py-5 rounded font-mediium py-1.5">Sign out</a>
         <h1 class="text-red-700 text-xl"><%= question.title%></h1>
         <h2><%= question.description%></h2>
-        <form action="/questions/<%= question.id%>/answer" method="post">
+        <form action="/questions/<%= question.id%>/answer/<%= electionId %> " method="post">
           <div class="flex gap-2 py-4">
             <div class="flex-auto">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
@@ -71,7 +79,7 @@
             <div class="flex-none">
               <input
                 type="submit"
-                class="bg-green-600 text-white px-5 py-2 rounded font-mediium py-1.5"
+                class="bg-green-600 text-white px-5 py-2 rounded font-mediium py-1.5 hover:cursor-pointer"
                 value="ADD"
               >
                 
