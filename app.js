@@ -354,11 +354,15 @@ app.post(
     });
     if (c == 4) {
       request.flash("error", "Only 4 options are allowed for a question..!");
-      return response.redirect(`/questionsDetails/${request.params.id}/${request.params.eid}`);
+      return response.redirect(
+        `/questionsDetails/${request.params.id}/${request.params.eid}`
+      );
     }
     if (request.body.title.length == 0) {
       request.flash("error", "Please enter the answer..!");
-      return response.redirect(`/questionsDetails/${request.params.id}/${request.params.eid}`);
+      return response.redirect(
+        `/questionsDetails/${request.params.id}/${request.params.eid}`
+      );
     }
     try {
       await Answers.addAnswer({
@@ -366,7 +370,9 @@ app.post(
         questionId: request.params.id,
       });
 
-      return response.redirect(`/questionsDetails/${request.params.id}/${request.params.eid}`);
+      return response.redirect(
+        `/questionsDetails/${request.params.id}/${request.params.eid}`
+      );
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -779,7 +785,8 @@ app.get(
         },
       });
       const answers = await Answers.findAll();
-      return response.render("viewElection.ejs", {
+      console.log("asdf..............................." + answers);
+      return response.render("viewElection", {
         election,
         questions,
         answers,
@@ -806,7 +813,7 @@ app.get("/result/:id", async (request, response) => {
 app.get("/elections/:id/viewResults", async (request, response) => {
   response.render("viewResults");
 });
-app.get("/answer-edit/:aid",async(request,response)=>{
+app.get("/answer-edit/:aid", async (request, response) => {
   response.render("edit");
 });
 module.exports = app;
