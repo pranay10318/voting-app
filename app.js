@@ -294,7 +294,7 @@ app.get(
         },
       });
       // here we need to add options too   but as of now not needed
-      response.render("questions.ejs", {
+      response.render("questions", {
         electionId: request.params.id,
         questions: questions,
         title: "Your Questions..!",
@@ -394,7 +394,7 @@ app.get(
         },
       });
       // here we need to add options too   but as of now not needed
-      response.render("voters.ejs", {
+      response.render("voters", {
         electionId: request.params.id,
         voters: voters,
         title: "Your voters..!",
@@ -701,7 +701,7 @@ app.get(
 app.get("/voter-login/:id/:election", async (request, response) => {
   const id = request.params.id;
   const election = await Elections.findByPk(id);
-  response.render("voter-login.ejs", {
+  response.render("voter-login", {
     title: "Voter LogIn",
     election,
     csrfToken: request.csrfToken(),
@@ -750,7 +750,7 @@ app.get("/conduct-election/:id/:election/:vid", async (request, response) => {
         electionId: request.params.id,
       },
     });
-    if (voter.status == true) {
+    if (request.params.vid != 0 && voter.status == true) {
       request.flash("error", "your response was already submitted..");
       return response.redirect(
         `/voter-login/${request.params.id}/${request.params.election}`
@@ -778,7 +778,11 @@ app.get(
   async (request, response) => {
     try {
       const id = request.params.id;
-      const election = await Elections.findByPk(id);
+      const election = await Elections.findOne({
+        where: {
+          id,
+        },
+      });
       const questions = await Questions.findAll({
         where: {
           electionId: id,
@@ -808,7 +812,7 @@ app.get("/result/:id", async (request, response) => {
       },
     }
   );
-  response.render("result.ejs");
+  response.render("result");
 });
 app.get("/elections/:id/viewResults", async (request, response) => {
   response.render("viewResults");

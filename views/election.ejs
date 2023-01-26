@@ -24,7 +24,7 @@
           </div>
           <% }else if(!data[i].status){ %> 
             <div class="flex-auto">
-              <a href="/elections/<%= data[i].id %>/preview" class="ml-2 text-sm text-purple-600 hover:cursor-pointer">
+              <a href="/conduct-election/<%= data[i].id %>/<%= data[i].name %>/0 " class="ml-2 text-sm text-purple-600 hover:cursor-pointer">
                 PreviewElection
               </a>
             </div>

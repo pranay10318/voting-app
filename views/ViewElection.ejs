@@ -17,7 +17,7 @@
   >
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
-        <b><h1 class="text-purple-700 text-3xl"><%=election.name%></h1></b>
+        <b><h1 class="text-purple-700 text-3xl"><%= election.name%></h1></b>
         <div class="flex gap-2 py-4">
           <%- include('list.ejs',{election,questions,answers}) %>
         </div>
