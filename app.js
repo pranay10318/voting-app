@@ -753,7 +753,7 @@ app.get("/conduct-election/:id/:election/:vid", async (request, response) => {
     const election = await Elections.findByPk(id);
     const answers = await Answers.findAll();
     if (request.params.vid == 0) {
-      return response.render("viewElection", {
+      return response.render("ViewElection", {
         title: election.name,
         electionId: id,
         election,
