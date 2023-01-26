@@ -96,7 +96,7 @@ app.get("/", async (request, response) => {
   if (request.user) {
     bul = true;
   }
-  response.render("index", {
+  return response.render("index", {
     title: "online Voting Application",
     loginStatus: bul,
     csrfToken: request.csrfToken(),
@@ -112,7 +112,7 @@ app.get(
 
     if (request.accepts("html")) {
       //request from web i.e. it accepts html   but for postman it accepts json that is in else part
-      response.render("elections", {
+      return response.render("elections", {
         //new elections.ejs should be created
         title: "my Elections",
         email: request.user.email,
@@ -121,7 +121,7 @@ app.get(
       });
     } else {
       //for postman like api  we should get json format as it donot support html
-      response.json({
+      return response.json({
         allElections,
       });
     }
@@ -135,7 +135,7 @@ app.get(
     const allElections = await Elections.getElections(loggedInadmin);
 
     if (request.accepts("html")) {
-      response.render("welcome", {
+      return response.render("welcome", {
         title: "My Elections",
         name: request.user.firstName,
         allElections,
@@ -143,7 +143,7 @@ app.get(
       });
     } else {
       //for postman like api  we should get json format as it donot support html
-      response.json({
+      return response.json({
         allElections,
       });
     }
@@ -185,7 +185,7 @@ app.post("/admins", async function (request, response) {
         response.redirect("/welcome");
       } else {
         request.flash("success", "Successfully Signed up");
-        response.redirect("/welcome");
+        return response.redirect("/welcome");
       }
     });
   } catch (error) {
@@ -247,7 +247,7 @@ app.get(
     //async for getting req
     try {
       const election = await Elections.findByPk(request.params.id);
-      response.render("election-create", {
+      return response.render("election-create", {
         electionId: request.params.id,
         election,
         csrfToken: request.csrfToken(),
@@ -268,7 +268,7 @@ app.get(
       const question = await Questions.findByPk(request.params.id);
       const answers = await Answers.getAnswers(request.params.id);
 
-      response.render("manageQuestion", {
+      return response.render("manageQuestion", {
         title: "Manage Questions",
         question,
         electionId: request.params.eid,
@@ -294,7 +294,7 @@ app.get(
         },
       });
       // here we need to add options too   but as of now not needed
-      response.render("questions", {
+      return response.render("questions", {
         electionId: request.params.id,
         questions: questions,
         title: "Your Questions..!",
@@ -394,7 +394,7 @@ app.get(
         },
       });
       // here we need to add options too   but as of now not needed
-      response.render("voters", {
+      return response.render("voters", {
         electionId: request.params.id,
         voters: voters,
         title: "Your voters..!",
@@ -554,7 +554,7 @@ app.get(
 );
 
 app.get("/signup", (request, response) => {
-  response.render("signup", {
+  return response.render("signup", {
     title: "signup",
     csrfToken: request.csrfToken(),
   });
@@ -562,7 +562,7 @@ app.get("/signup", (request, response) => {
 
 app.get("/login", (request, response) => {
   //getting login page to webpage
-  response.render("login", {
+  return response.render("login", {
     //we are rendering login.ejs
     title: "LogIn page",
     csrfToken: request.csrfToken(),
@@ -584,7 +584,7 @@ app.get(
   async (request, response) => {
     try {
       const election = await Elections.findByPk(request.params.id);
-      response.render("editElection", {
+      return response.render("editElection", {
         title: "editElection",
         electionId: request.params.id,
         election,
@@ -686,7 +686,7 @@ app.get(
   async (request, response) => {
     try {
       const elections = await Elections.findAll(request.params.id);
-      response.render("list", {
+      return response.render("list", {
         title: "view Election",
         electionId: request.params.id,
         elections,
@@ -701,7 +701,7 @@ app.get(
 app.get("/voter-login/:id/:election", async (request, response) => {
   const id = request.params.id;
   const election = await Elections.findByPk(id);
-  response.render("voter-login", {
+  return response.render("voter-login", {
     title: "Voter LogIn",
     election,
     csrfToken: request.csrfToken(),
@@ -750,15 +750,25 @@ app.get("/conduct-election/:id/:election/:vid", async (request, response) => {
         electionId: request.params.id,
       },
     });
-    if (request.params.vid != 0 && voter.status == true) {
+    const election = await Elections.findByPk(id);
+    const answers = await Answers.findAll();
+    if (request.params.vid == 0) {
+      return response.render("viewElection", {
+        title: election.name,
+        electionId: id,
+        election,
+        voterId: request.params.vid,
+        answers,
+        questions,
+        csrfToken: request.csrfToken(),
+      });
+    } else if (voter.status == true) {
       request.flash("error", "your response was already submitted..");
       return response.redirect(
         `/voter-login/${request.params.id}/${request.params.election}`
       );
     }
-    const election = await Elections.findByPk(id);
-    const answers = await Answers.findAll();
-    response.render("launch", {
+    return response.render("launch", {
       title: election.name,
       electionId: id,
       election,
@@ -812,12 +822,12 @@ app.get("/result/:id", async (request, response) => {
       },
     }
   );
-  response.render("result");
+  return response.render("result");
 });
 app.get("/elections/:id/viewResults", async (request, response) => {
-  response.render("viewResults");
+  return response.render("viewResults");
 });
 app.get("/answer-edit/:aid", async (request, response) => {
-  response.render("edit");
+  return response.render("edit");
 });
 module.exports = app;

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,9 +19,20 @@
   >
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
-        <b><h1 class="text-purple-700 text-3xl"><%= election.name%></h1></b>
-        <div class="flex gap-2 py-4">
-          <%- include('list.ejs',{election,questions,answers}) %>
+        <b><h1 class="text-purple-700 text-4xl font-extrabold"><%=election.name%></h1></b>
+        
+            <h1 class="text-4xl text-purple-800 font-extrabold">Preview:</h1>
+          <div class="flex gap-2 py-4">
+            <%- include('list.ejs',{election,questions,answers}) %>
+          </div>
+        <ul><% if(messages && messages.error && messages.error.length > 0)  { %>
+          <% for(var i=0; i<messages.error.length; i++) { %>
+                  <li class="text-red-600 text-xl "> <%= messages.error[i] %></li>
+          <% } %>
+        <% } %></ul>
+        <div>
+          
+          <%-include("footer.ejs") %>
         </div>
       </div>
     </div>
