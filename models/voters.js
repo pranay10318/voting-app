@@ -28,6 +28,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       }); //from sequelize package  donot confuse bro
     }
+    static deleteVoter({ id, electionId }) {
+      return this.destroy({
+        where: {
+          id,
+          electionId,
+        },
+      }); //from sequelize package  donot confuse bro
+    }
   }
   Voters.init(
     {

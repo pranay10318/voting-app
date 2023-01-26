@@ -5,12 +5,13 @@
     
     <% for(var i=0;i<data.length;i++) { %>
       <li >
-        <div class="items-center w-fit my-2 px-2 py-1 hover:bg-green-100 rounded">
-          <!-- <a href="/elections/electionId/" class="ml-2 text-sm text-gray-600 hover:cursor-pointer"> -->
-            <!-- add options for each questions -->
-           <strong><%= " "+data[i].name%></strong>
-          <!-- </a> -->
-        
+        <div class="flex items-center w-full my-2 px-2 py-1 hover:bg-green-100 rounded">
+            <div class="flex-auto">
+              <strong><%= " "+data[i].name +"  "%></strong>
+            </div>
+            <button onclick="deleteVoter(`<%= data[i].id%>`)" class="ml-2 text-sm text-red-600 hover:cursor-pointer">
+              Delete
+            </button>
         </div>
       </li>
       <% } %>

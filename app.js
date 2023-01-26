@@ -109,6 +109,27 @@ app.get(
   async (request, response) => {
     const loggedInadmin = request.user.id;
     const allElections = await Elections.getElections(loggedInadmin);
+    const onGoingElections = await Elections.findAll({
+      where: {
+        adminId: loggedInadmin,
+        started: true,
+        status: false,
+      },
+    });
+    const completedElections = await Elections.findAll({
+      where: {
+        adminId: loggedInadmin,
+        started: true,
+        status: true,
+      },
+    });
+    const newElections = await Elections.findAll({
+      where: {
+        adminId: loggedInadmin,
+        started: false,
+        status: false,
+      },
+    });
 
     if (request.accepts("html")) {
       //request from web i.e. it accepts html   but for postman it accepts json that is in else part
@@ -117,6 +138,9 @@ app.get(
         title: "my Elections",
         email: request.user.email,
         allElections,
+        completedElections,
+        newElections,
+        onGoingElections,
         csrfToken: request.csrfToken(),
       });
     } else {
@@ -133,12 +157,35 @@ app.get(
   async (request, response) => {
     const loggedInadmin = request.user.id;
     const allElections = await Elections.getElections(loggedInadmin);
-
+    const onGoingElections = await Elections.findAll({
+      where: {
+        adminId: loggedInadmin,
+        started: true,
+        status: false,
+      },
+    });
+    const completedElections = await Elections.findAll({
+      where: {
+        adminId: loggedInadmin,
+        started: true,
+        status: true,
+      },
+    });
+    const newElections = await Elections.findAll({
+      where: {
+        adminId: loggedInadmin,
+        started: false,
+        status: false,
+      },
+    });
     if (request.accepts("html")) {
       return response.render("welcome", {
         title: "My Elections",
         name: request.user.firstName,
         allElections,
+        completedElections,
+        newElections,
+        onGoingElections,
         csrfToken: request.csrfToken(),
       });
     } else {
@@ -643,7 +690,7 @@ app.delete(
   "/questions/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    console.log("We have to delete a Todo with ID: ", request.params.id);
+    console.log("We have to delete a Question with ID: ", request.params.id);
     // FILL IN YOUR CODE HERE
     try {
       //this code is by them i.e. wd   my code is below
@@ -663,13 +710,33 @@ app.delete(
   "/answers/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    console.log("We have to delete a Todo with ID: ", request.params.id);
+    console.log("We have to delete a answer with ID: ", request.params.id);
     // FILL IN YOUR CODE HERE
     try {
       //this code is by them i.e. wd   my code is below
       var c = await Answers.deleteAnswer({
         id: request.params.id,
         questionId: request.body.questionId,
+      });
+      if (c) console.log("deleted successfully");
+      else console.log("unsuccesss");
+      return response.json({ success: true });
+    } catch (error) {
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.delete(
+  "/voters/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    console.log("We have to delete a voter with ID: ", request.params.id);
+    try {
+      //this electionid comes from del func in script of voters.ejs
+      var c = await Voters.deleteVoter({
+        id: request.params.id,
+        electionId: request.body.electionId,
       });
       if (c) console.log("deleted successfully");
       else console.log("unsuccesss");
@@ -800,7 +867,7 @@ app.get(
       });
       const answers = await Answers.findAll();
       console.log("asdf..............................." + answers);
-      return response.render("viewElection", {
+      return response.render("ViewElection", {
         election,
         questions,
         answers,
@@ -827,7 +894,112 @@ app.get("/result/:id", async (request, response) => {
 app.get("/elections/:id/viewResults", async (request, response) => {
   return response.render("viewResults");
 });
-app.get("/answer-edit/:aid", async (request, response) => {
-  return response.render("edit");
-});
+app.get(
+  "/edit-answer/:id/:qid/:eid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const answerId = request.params.id;
+    const answer = await Answers.findOne({
+      where: {
+        id: answerId,
+      },
+    });
+    return response.render("edit-answer", {
+      title: "Edit-Answer",
+      answer,
+      answerId: answer.id,
+      electionId: request.params.eid,
+      questionId: request.params.qid,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+app.post(
+  "/edit-answer/:id/:qid/:eid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const title = request.body.title;
+    const answer = await Answers.findOne({
+      where: {
+        id: request.params.id,
+      },
+    });
+
+    if (answer.title == title) {
+      request.flash("error", "Please update the values..");
+      return response.redirect(
+        `/edit-answer/${request.params.id}/${request.params.qid}/${request.params.eid}`
+      );
+    }
+    const up = await Answers.update(
+      {
+        title,
+      },
+      {
+        where: {
+          id: answer.id,
+        },
+      }
+    );
+    console.log("asfddddddddddddddddd....................." + up);
+    return response.redirect(
+      `/questionsDetails/${request.params.qid}/${request.params.eid}`
+    );
+  }
+);
+
+app.get(
+  "/edit-question/:id/:eid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const questionId = request.params.id;
+    const question = await Questions.findOne({
+      where: {
+        id: questionId,
+      },
+    });
+    return response.render("edit-question", {
+      title: "Edit-Election",
+      question,
+      questionId,
+      electionId: request.params.eid,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+app.post(
+  "/edit-question/:id/:eid",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const title = request.body.title;
+    const desc = request.body.desc;
+    const question = await Questions.findOne({
+      where: {
+        id: request.params.id,
+      },
+    });
+
+    if (question.title == title && question.description == desc) {
+      request.flash("error", "Please update the values..");
+      return response.redirect(
+        `/edit-question/${request.params.id}/${request.params.eid}`
+      );
+    }
+    const up = await Questions.update(
+      {
+        title,
+        description: desc,
+      },
+      {
+        where: {
+          id: question.id,
+        },
+      }
+    );
+    console.log("asfddddddddddddddddd....................." + up);
+    return response.redirect(
+      `/questionsDetails/${question.id}/${request.params.eid}`
+    );
+  }
+);
 module.exports = app;

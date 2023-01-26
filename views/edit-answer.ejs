@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <link href="./css/styles.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title><%= title%></title>
+    
+  </head>
+  <body
+  style="
+    background-color: beige;
+    font-family: 'Courier New', Courier, monospace;
+  "
+>
+    <div class="grid grid-cols-6">
+      <div class="col-start-3 col-span-2">
+        <%- include("header.ejs")%>
+        <h1 class="text-blue-700 font-bold text-1.2xl bg-gray-100 w-fit pr-1">
+            /<a href="/questionsDetails/<%= questionId%>/<%= electionId%>">Manage-Question</a>/<a href="/edit-answer/<%= answerId%>/<%= questionId  %>/<%= electionId  %>">Edit-Answer</a>
+          </h1>
+        <h1>Update your Answer ..</h1>
+        <br />
+        <a
+          href="/signout"
+          class="bg-red-600 text-white px-2 py-5 rounded font-mediium py-1.5"
+          >Sign out</a
+        >
+        <form method="post" action="/edit-answer/<%= answerId%>/<%= questionId  %>/<%= electionId  %> ">
+        <div class="py-3">
+            <input type="hidden" name="_csrf" value="<%= csrfToken%>"/>
+          <input
+            type="text"
+            name="title"
+            class="border border-color-gray-300 text-gray-900 rounded w-full p-2 text-sm"
+            value="<%= answer.title %>"
+            placeholder="Update Question here.."
+          />
+          </div>
+          
+          <div class="my-1">
+          
+          <input
+            type="submit"
+            value="UPDATE"
+            class="bg-green-600 text-white px-2 py-1 rounded font-mediium py-1.5 hover:cursor-pointer"
+          ></div>
+        </form>
+        </div>
+      </div>
+    </div>
+    <ul ><% if(messages && messages.error && messages.error.length > 0)  { %>
+        <% for(var i=0; i<messages.error.length; i++) { %>
+                <li class="text-red-600 text-xl " align="center"> <%= messages.error[i] %></li>
+        <% } %>
+      <% } %></ul>
+  </body>
+</html>

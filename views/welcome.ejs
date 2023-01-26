@@ -74,8 +74,13 @@
           </button>
         </h1>
         <div class="mt-10">
-          <%-include("election.ejs",{title:"My Elections",data:allElections})%>
+          <%-include("election.ejs",{title:"OnGoing-Elections",data:onGoingElections})%>
         </div>
+        <div class="mt-10">
+          <%-include("election.ejs",{title:"New-Elections",data:newElections})%>
+        </div>
+        <div class="mt-10"></div>
+        <%-include("election.ejs",{title:"Completed-Elections",data:completedElections})%>
       </div>
     </div>
   </body>

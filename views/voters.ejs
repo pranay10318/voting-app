@@ -12,31 +12,15 @@
       var token = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
-      const updateTodo = (id, bool) => {
-        //here we are taking checked attribute from todo.ejs
-        console.log(bool);
-        fetch(`/todos/${id}`, {
-          method: "put",
-          headers: { "content-Type": "application/json" },
-          body: JSON.stringify({
-            //for it we are needed to pass the completion status
-            completed: !bool,
-            _csrf: token,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              window.location.reload();
-            }
-          })
-          .catch((err) => console.error(err));
-      };
-      function deleteTodo(id) {
-        fetch(`/todos/${id}`, {
+
+function deleteVoter(id) {
+        console.log("entered.........................................................................");
+        fetch(`/voters/${id}`, {
           //url to make the to as completed after that we need to reload   headers and body can also be placed
           method: "delete",
           headers: { "Content-type": "application/json" },
           body: JSON.stringify({
+            electionId:`<%= electionId%>`,
             _csrf: token,
           }),
         })
@@ -47,6 +31,7 @@
           })
           .catch((err) => console.error(err)); //o/p error to the console
       }
+       
     </script>
   </head>
   <body
@@ -90,9 +75,7 @@
             </div>
           </div>
         </form>
-        <%- include("voter.ejs",{
-            title:title,data:voters,
-        }) %>
+        <%- include('voter.ejs',{title,data:voters}) %> 
         <ul><% if(messages && messages.error && messages.error.length > 0)  { %>
           <% for(var i=0; i<messages.error.length; i++) { %>
                   <li class="text-red-600 text-xl "> <%= messages.error[i] %></li>
