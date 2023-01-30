@@ -4,12 +4,11 @@ var csrf = require("tiny-csrf");
 const app = express();
 const {
   Elections,
-  Todo,
   Admin,
   Questions,
   Answers,
   Voters,
-} = require("./models"); //for doing any operations on todo we should import models
+} = require("./models"); //for doing any operations on election we should import models
 const bodyParser = require("body-parser"); //for parsing from/to json
 var cookieParser = require("cookie-parser");
 const path = require("path");
@@ -25,7 +24,7 @@ const { getElementById } = require("domutils");
 const saltRounds = 10;
 
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false })); //for encoding urls  form submission for maniputlating todo
+app.use(express.urlencoded({ extended: false })); //for encoding urls  form submission for maniputlating election
 
 app.use(cookieParser("SSH! THIS IS A SCRET CODE"));
 app.use(csrf("123456789iamasecret987654321look", ["POST", "PUT", "DELETE"]));
@@ -146,7 +145,13 @@ app.get(
     } else {
       //for postman like api  we should get json format as it donot support html
       return response.json({
+        title: "my Elections",
+        email: request.user.email,
         allElections,
+        completedElections,
+        newElections,
+        onGoingElections,
+        csrfToken: request.csrfToken(),
       });
     }
   }
@@ -191,7 +196,13 @@ app.get(
     } else {
       //for postman like api  we should get json format as it donot support html
       return response.json({
+        title: "My Elections",
+        name: request.user.firstName,
         allElections,
+        completedElections,
+        newElections,
+        onGoingElections,
+        csrfToken: request.csrfToken(),
       });
     }
   }
@@ -263,7 +274,7 @@ app.post(
       return response.redirect("/elections");
     }
 
-    console.log("creating new todo", request.body);
+    console.log("creating new election", request.body);
     try {
       await Elections.addElection({
         title: request.body.title,
@@ -649,7 +660,7 @@ app.put(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     const loggedInUser = request.user.id;
-    console.log("we have to update a todo with ID:", request.params.id);
+    console.log("we have to update a election with ID:", request.params.id);
     try {
       const election = await Elections.findByPk({
         where: { id: request.params.id },
@@ -680,7 +691,10 @@ app.delete(
       );
       if (c) console.log("deleted successfully");
       else console.log("unsuccesss");
+      if(c)
       return response.json({ success: true });
+      return response.json({ success: false });
+
     } catch (error) {
       return response.status(422).json(error);
     }
