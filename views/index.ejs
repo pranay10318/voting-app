@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/styles.css" rel="stylesheet" />
+    <title><%= title%></title>
+  </head>
+  <body>
+    <div class="grid grid-cols-6">
+      <div class="col-start-3 col-span-2">
+        <%- include('header.ejs') %> <% if(loginStatus ==true){%>
+        <h1>Hey! admin your are already logged in..!</h1>
+        <button
+          class="bg-green-600 text-white px-2 py-2 rounded font-mediium mt-2"
+        >
+          <a href="/welcome">SeeUrElections</a>
+        </button>
+        <% } else{ %>
+        <p class="py-2">welcome to online voting platform</p>
+        <p class="py-2">
+          New here? <a href="/signup" class="text-green-800">Sign-up now</a
+          ><!--/signup route for displaying signup page and details posting for registration is done by /users route in app.js below /signup-->
+        </p>
+        <p class="py-2">
+          Already have an account?
+          <a href="/login" class="text-green-800">Sign-in</a
+          ><!--/login route is for displaying login page    and the details posting is done by another route namely session check in app.js below get->/login-->
+        </p>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>
