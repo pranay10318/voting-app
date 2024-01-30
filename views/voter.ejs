@@ -1,0 +1,21 @@
+<h5> 
+    <%= title%> <span class="bg-gray-100 text-sm font-small mr-2 px-2 py-0.5  rounded dark:text-gray-900 dark-bg-gray-200 justify-center items-center items" id="count-<%= title%>"><%= data.length%></span>
+  </h5>
+  <ul class="list-none">
+    
+    <% for(var i=0;i<data.length;i++) { %>
+      <li >
+        <div class="flex items-center w-full my-2 px-2 py-1 hover:bg-green-100 rounded">
+            <div class="flex-auto">
+              <strong><%= " "+data[i].name +"  "%></strong>
+            </div>
+            <button onclick="deleteVoter(`<%= data[i].id%>`)" class="ml-2 text-sm text-red-600 hover:cursor-pointer">
+              Delete
+            </button>
+        </div>
+      </li>
+      <% } %>
+    
+
+  </ul>
+

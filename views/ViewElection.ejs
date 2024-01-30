@@ -1,0 +1,44 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/styles.css" rel="stylesheet" />
+    <title><%= title%></title>
+  </head>
+  <body
+    style="
+      background-color: beige;
+      font-family: 'Courier New', Courier, monospace;
+    "
+  >
+    <div class="grid grid-cols-6">
+      <div class="col-start-3 col-span-2">
+        <%-include("header.ejs") %> 
+        <h1 class="text-blue-700 font-bold text-1.2xl bg-gray-100 w-fit pr-1">
+          /<a href="/">Home</a>/<a href="/welcome">Elections</a>/<a href="/conduct-election/<%=electionId%>/<%= election.name%>/0">Preview-Election</a>
+        </h1>
+        <b><h1 class="text-purple-700 text-4xl font-extrabold"><%=election.name%></h1></b>
+        
+            <h1 class="text-4xl text-purple-800 font-extrabold">Preview:</h1>
+          <div class="flex gap-2 py-4">
+            <%- include('list.ejs',{election,questions,answers}) %>
+          </div>
+        <ul><% if(messages && messages.error && messages.error.length > 0)  { %>
+          <% for(var i=0; i<messages.error.length; i++) { %>
+                  <li class="text-red-600 text-xl "> <%= messages.error[i] %></li>
+          <% } %>
+        <% } %></ul>
+        <div>
+          
+          <%-include("footer.ejs") %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/styles.css" rel="stylesheet" />
+    <title><%= title%></title>
+    <script>
+      var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+      const updateTodo = (id, bool) => {
+        //here we are taking checked attribute from todo.ejs
+        console.log(bool);
+        fetch(`/todos/${id}`, {
+          method: "put",
+          headers: { "content-Type": "application/json" },
+          body: JSON.stringify({
+            //for it we are needed to pass the completion status
+            completed: !bool,
+            _csrf: token,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => console.error(err));
+      };
+      function deleteTodo(id) {
+        fetch(`/todos/${id}`, {
+          //url to make the to as completed after that we need to reload   headers and body can also be placed
+          method: "delete",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => console.error(err)); //o/p error to the console
+      }
+    </script>
+  </head>
+  <body
+    style="
+      background-color: beige;
+      font-family: 'Courier New', Courier, monospace;
+    "
+  >
+    <div class="grid grid-cols-6">
+      <div class="col-start-3 col-span-2">
+        <b><h1 class="text-purple-700 text-4xl font-extrabold"><%=election.name%></h1></b>
+        <% if(voterId!=0){ %> 
+        <form action="/result/<%= voterId%>" method="get">
+          <% }else{ %>
+            <h1 class="text-4xl text-purple-800 font-extrabold">Preview:</h1>
+            <% } %>  
+          <div class="flex gap-2 py-4">
+            <%- include('list.ejs',{election,questions,answers}) %>
+          </div>
+          <% if(voterId!=0){ %> 
+          <input type="submit" value="CastVote" class="bg-gray-600 text-white px-2 py-1 rounded font-mediium mb-10 hover:cursor-pointer"/>
+        </form>
+        <% } %> 
+        <ul><% if(messages && messages.error && messages.error.length > 0)  { %>
+          <% for(var i=0; i<messages.error.length; i++) { %>
+                  <li class="text-red-600 text-xl "> <%= messages.error[i] %></li>
+          <% } %>
+        <% } %></ul>
+        <div>
+          
+          <%-include("footer.ejs") %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
