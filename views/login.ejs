@@ -11,7 +11,7 @@
   <!-- Include custom styles if needed -->
   <link href="./css/styles.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-r from-green-400 to-blue-500">
+<body class="bg-gradient-to-r from-pink-400 via-red-500 to-yellow-500">
   <div class="flex justify-center items-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-2xl max-w-md">
       <%- include('header.ejs') %>
@@ -20,14 +20,14 @@
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="py-3">
           <label for="email" class="text-gray-700">Email:</label>
-          <input type="email" name="email" class="border-gray-300 text-gray-600 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500">
+          <input type="email" name="email" class="border-gray-300 text-gray-600 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500">
         </div>
         <div class="py-3">
           <label for="password" class="text-gray-700">Password:</label>
-          <input type="password" name="password" class="border-gray-300 text-gray-600 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500">
+          <input type="password" name="password" class="border-gray-300 text-gray-600 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500">
         </div>
         <div class="py-3">
-          <button class="text-white bg-green-600 hover:bg-green-800 rounded px-4 py-2 w-full transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">Sign In</button>
+          <button class="text-white bg-pink-600 hover:bg-pink-800 rounded px-4 py-2 w-full transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">Sign In</button>
         </div>
       </form>
       <ul class="text-red-600 text-sm">
