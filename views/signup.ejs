@@ -1,68 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./css/styles.css" rel="stylesheet" />
-    <title><%= title%></title>
-  </head>
-  <body>
-    <div class="grid grid-cols-6">
-      <div class="col-start-3 col-span-2">
-        <%- include('header.ejs') %>
-        <h6 class="py-6">Signup as new user</h6>
-        <form action="/admins" method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-          <div class="py-3">
-            <label for="firstName">First Name :</label>
-            <input
-              type="text"
-              name="firstName"
-              class="border-gray-300 text-gray-600 rounded p-2 w-full"
-            />
-          </div>
-          <div class="py-3">
-            <label for="lastName">last Name :</label
-            ><input
-              type="text"
-              name="lastName"
-              class="border-gray-300 text-gray-600 rounded p-2 w-full"
-            />
-          </div>
-          <div class="py-3">
-            <label for="email">email :</label>
-            <input
-              type="email"
-              name="email"
-              class="border-gray-300 text-gray-600 rounded p-2 w-full"
-            />
-          </div>
-          <div class="py-3">
-            <label for="password">password :</label>
-            <input
-              type="password"
-              name="password"
-              class="border-gray-300 text-gray-600 rounded p-2 w-full"
-            />
-          </div>
-          <div class="py-3">
-            <button
-              class="text-white bg-green-600 hover:bg-green-800 rounded px-2 py-3"
-              type="submit"
-            >
-              Sign up
-            </button>
-          </div>
-        </form>
-        <ul><% if(messages && messages.error && messages.error.length > 0)  { %>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <title><%= title %></title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="./css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-r from-green-400 to-blue-500">
+  <div class="flex justify-center items-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-2xl max-w-md">
+      <%- include('header.ejs') %>
+      <h6 class="py-6 text-2xl font-semibold text-center">Sign up as new user</h6>
+      <form action="/admins" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="py-3">
+          <label for="firstName" class="text-gray-700">First Name:</label>
+          <input type="text" name="firstName" class="border-gray-300 text-gray-600 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500">
+        </div>
+        <div class="py-3">
+          <label for="lastName" class="text-gray-700">Last Name:</label>
+          <input type="text" name="lastName" class="border-gray-300 text-gray-600 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500">
+        </div>
+        <div class="py-3">
+          <label for="email" class="text-gray-700">Email:</label>
+          <input type="email" name="email" class="border-gray-300 text-gray-600 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500">
+        </div>
+        <div class="py-3">
+          <label for="password" class="text-gray-700">Password:</label>
+          <input type="password" name="password" class="border-gray-300 text-gray-600 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-pink-500">
+        </div>
+        <div class="py-3">
+          <button class="text-white bg-pink-600 hover:bg-pink-800 rounded px-4 py-2 w-full transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" type="submit">Sign Up</button>
+        </div>
+      </form>
+      <p class="text-center mt-4">
+        Already have an account? <a href="/login" class="text-blue-600 hover:text-blue-800">Sign-in</a>
+      </p>
+      <ul class="text-red-600 text-sm">
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
           <% for(var i=0; i<messages.error.length; i++) { %>
-                  <li class="text-red-600 text-xl "> <%= messages.error[i] %></li>
+            <li><%= messages.error[i] %></li>
           <% } %>
-        <% } %></ul>
-      </div>
+        <% } %>
+      </ul>
     </div>
-  </body>
+  </div>
+</body>
 </html>
