@@ -6,9 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="<%= csrfToken %>">
   <title><%= title %></title>
-  <!-- Include Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <!-- Include custom styles if needed -->
   <link href="./css/styles.css" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-r from-pink-400 via-red-500 to-yellow-500">
@@ -38,6 +36,9 @@
           <button class="text-white bg-pink-600 hover:bg-pink-800 rounded px-4 py-2 w-full transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" type="submit">Sign Up</button>
         </div>
       </form>
+      <p class="text-center mt-4">
+        Already have an account? <a href="/login" class="text-blue-600 hover:text-blue-800">Sign-in</a>
+      </p>
       <ul class="text-red-600 text-sm">
         <% if(messages && messages.error && messages.error.length > 0)  { %>
           <% for(var i=0; i<messages.error.length; i++) { %>
