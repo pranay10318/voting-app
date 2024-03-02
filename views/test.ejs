@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "newJsFile": "/public/new.js"
+          }
+        }
+    </script>
+    <script type="module">
+        import { addNumbers } from 'newJsFile';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const result = addNumbers(5, 3);
+            displayResult(result);
+        });
+
+        function displayResult(result) {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = `Result: ${result}`;
+        }
+    </script>
+    <link rel="stylesheet" href="public/css/styles.css">
+</head>
+<body>
+    <h1>Import maps</h1>
+    <div>
+        <h1>Adding 5 and 3:</h1>
+        <h3 id="result"></h3>
+    </div>
+</body>
+</html>

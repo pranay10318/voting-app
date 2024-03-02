@@ -5,21 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<%= csrfToken %>" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="public/css/styles.css" rel="stylesheet">
     <title><%= title%></title>
     <script>
       var token = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
       const updateTodo = (id, bool) => {
-        //here we are taking checked attribute from todo.ejs
         console.log(bool);
         fetch(`/todos/${id}`, {
           method: "put",
           headers: { "content-Type": "application/json" },
           body: JSON.stringify({
-            //for it we are needed to pass the completion status
             completed: !bool,
             _csrf: token,
           }),
