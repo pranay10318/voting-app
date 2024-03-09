@@ -1,4 +1,4 @@
-name: Auto test L10 solution
+name: Voting Application
 on: push
 env:
   PG_DATABASE: wd-todo-test
@@ -38,7 +38,7 @@ jobs:
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
       - name: Install dependencies
-        run: cd l10 && npm ci
+        run: npm ci
 
       - name: Run unit tests
-        run: cd l10 && npm test
+        run: npm test
