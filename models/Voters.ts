@@ -26,7 +26,7 @@ export default class Voters extends Model {
   @BelongsTo(() => Elections)
   election!: Elections;
 
-  static addVoter({
+static addVoter({
     title,
     password,
     electionId,
@@ -50,7 +50,7 @@ export default class Voters extends Model {
     });
   }
 
-  static deleteVoter({ id, electionId }: { id: number; electionId: number }) {
+static deleteVoter({ id, electionId }: { id: number; electionId: number }) {
     return this.destroy({
       where: {
         id,
