@@ -28,6 +28,7 @@ const sequelize = new Sequelize(database, username, password, {
   host,
   port,
   dialect,
+  logging: false
 });
 
 sequelize.addModels([Admins, Elections, Questions, Answers, Voters]);
@@ -103,7 +104,6 @@ passport.use(
 );
 
 passport.serializeUser((user: any, done: any) => {
-  console.log("Serializing Admin with id ", user.id);
   done(null, user.id);
 });
 
@@ -168,7 +168,6 @@ app.post("/admins", async function (request: Request, response: Response) {
     return response.redirect("/signup");
   }
 
-  console.log("creating new User", request.body);
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
 
   var bl = await Admins.findOne({
@@ -211,7 +210,6 @@ app.post(
     failureFlash: true,
   }),
   function (request: Request, response: Response) {
-    console.log(request.user);
     response.redirect("/welcome");
   },
 );
@@ -365,17 +363,14 @@ app.post(
       return response.redirect("/elections");
     }
 
-    console.log("creating new election", request.body);
     if (!request.user) return;
     if (!request.user.id) return;
     try {
-      console.log("creating Election: ", request.body);
       const res = await Elections.addElection({
         title: request.body.title,
         adminId: parseInt(request.user.id),
       });
 
-      console.log("Election created: ", res);
       let createdElectionId = res.dataValues.id;
       let createdBy = res.dataValues.adminId;
 
@@ -418,14 +413,11 @@ app.delete(
     if (!request.user) throw new Error("User not found");
     if (!request.user.id) throw new Error("Please login to continue");
 
-    console.log("Delete a election with ID: ", request.params.id);
     try {
       var c = await Elections.deleteElection(
         parseInt(request.params.id),
         parseInt(request.user.id),
       );
-      if (c) console.log("deleted successfully");
-      else console.log("unsuccesss");
       if (c) return response.json({ success: true });
       return response.json({ success: false });
     } catch (error) {
@@ -494,7 +486,6 @@ app.post(
         },
         order: [["id", "DESC"]],
       });
-      console.log("......................al id.......", allElections);
 
       return response.redirect(`/elections/${request.params.id}/questions`);
     } catch (error) {
@@ -601,14 +592,11 @@ app.delete(
   async function (request, response) {
     // const Questions = lazyQuestionsModel();
 
-    console.log("We have to delete a Question with ID: ", request.params.id);
     try {
       var c = await Questions.deleteQuestion({
         id: parseInt(request.params.id),
         electionId: request.body.electionId,
       });
-      if (c) console.log("deleted successfully");
-      else console.log("unsuccesss");
       return response.json({ success: true });
     } catch (error) {
       return response.status(422).json(error);
@@ -646,7 +634,6 @@ app.post(
         questionId: parseInt(request.params.qid),
       });
 
-      console.log("response from server : ", res);  
 
       return response.redirect(
         `/questionsDetails/${request.params.qid}/${request.params.eid}`,
@@ -722,14 +709,11 @@ app.delete(
   async function (request, response) {
     // const Answers = lazyAnswersModel();
 
-    console.log("We have to delete a answer with ID: ", request.params.id);
     try {
       var c = await Answers.deleteAnswer({
         id: parseInt(request.params.id),
         questionId: request.body.questionId,
       });
-      if (c) console.log("deleted successfully");
-      else console.log("unsuccesss");
       return response.json({ success: true });
     } catch (error) {
       return response.status(422).json(error);
@@ -790,7 +774,6 @@ app.post(
       return response.redirect(`/elections/${request.params.id}/voters`);
     } catch (error) {
 
-      console.log("plssssss.. : "+ " req body: " + JSON.stringify(request.body) +" eid: " + request.params.id +error);
       return response.status(422).json(error);
     }
   },
@@ -913,7 +896,6 @@ app.post(
         `/voter-login/${request.params.id}/${request.params.election}`,
       );
     }
-    console.log("Current voter Status", voter.status);
     if (voter.status === true) {
       request.flash("error", "your response was already submitted..");
       return response.redirect(
@@ -1024,15 +1006,12 @@ app.delete(
   async function (request, response) {
     // const Voters = lazyVotersModel();
 
-    console.log("We have to delete a voter with ID: ", request.params.id);
     try {
       //this electionid comes from del func in script of voters.ejs
       var c = await Voters.deleteVoter({
         id: parseInt(request.params.id),
         electionId: request.body.electionId,
       });
-      if (c) console.log("deleted successfully");
-      else console.log("unsuccesss");
       return response.json({ success: true });
     } catch (error) {
       return response.status(422).json(error);

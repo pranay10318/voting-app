@@ -15,6 +15,7 @@ const sequelize = new Sequelize(database, username, password, {
   host,
   port,
   dialect,
+  logging:false
 });
 sequelize.addModels([Admins, Elections, Questions, Answers, Voters]);
 
@@ -38,7 +39,6 @@ const login = async (username: string, password: string) => {
     password: password,
     _csrf: csrfToken,
   });
-  console.log("message from login %s", res);
 };
 
 const signout = async () => {
@@ -73,8 +73,6 @@ describe("Voting Application Login SignUp", function () {
       password: "123",
       _csrf: csrfToken,
     });
-
-    console.log("message from signup %s", res.headers);
 
     expect(res.statusCode).toBe(302);
     expect(res.headers.location).toBe("/welcome");
@@ -158,7 +156,6 @@ describe("Election", function () {
         description: "Election 1 Description",
         _csrf: csrfToken,
       });
-      console.log("message from create election %s", res);
       expect(res.statusCode).toBe(302);
       expect(res.headers.location).toBe("/elections/1");// id would be 1 as it is the first election
     });
@@ -175,7 +172,6 @@ describe("Election", function () {
       res = await agent.delete("/elections/1").send({
         _csrf: extractCsrfToken(res),
       });
-      console.log("message from delete election %s", res);
       
       expect(res.statusCode).toBe(200);
 
@@ -348,9 +344,7 @@ describe("Election", function () {
 describe("Test Answers", () => {
 
   test("Should add an answer to a question", async () => {
-    console.log("message from add answer loin");
     let res = await agent.get("/login");
-    console.log("message from add answer loin %s", res);
   let csrfToken = extractCsrfToken(res);
 
     await login("n@n.in", "123");
@@ -361,18 +355,14 @@ describe("Test Answers", () => {
       description: 'Test Question Description',
       electionId: election.id
     });    
-    console.log("message from add answer %s", question.id, " ", election.id);
     res = await agent.get("/login");
   csrfToken = extractCsrfToken(res);
-    console.log("consoled error pls: res", res);
     csrfToken = await extractCsrfToken(res);
 
-    console.log("message from add answer %s", question.id, " ", election.id);
     const response = await agent
       .post(`/questions/${question.id}/answer/${election.id}`)
       .send({ title: "Test Answer", _csrf: csrfToken})
       .expect(302); 
-    console.log("message from add answer afterCSRF%s", response);
     expect(response.headers.location).toContain(`/questionsDetails/${question.id}/${election.id}`);
   });
 
@@ -451,7 +441,6 @@ describe("Test Answers", () => {
       .delete(`/answers/${answer.id}`)
       .send({ _csrf: csrfToken, questionId: question.id, electionId: election.id})
       .expect(200);
-    console.log("message from delete answer %s", response);
     expect(response.body.success).toBe(true);
 
     const deletedAnswer = await Answers.findByPk(answer.id);
@@ -477,12 +466,10 @@ describe("Voting Routes", () => {
   test("Should add a new voter to a specific election", async () => {
     const election = await Elections.addElection({ title: 'Test Election', adminId: 1 });
     csrfToken = extractCsrfToken(await agent.get("/elections/1/voters"));
-    console.log("csrfToken vLogin %s", csrfToken);
     const res = await agent
       .post(`/elections/${election.id}/voters`)
       .send({ name: "Test Voter", password: "123456", _csrf: csrfToken }) 
       .expect(302);
-    console.log("message from add voter %s", res);
     
     expect(res.headers.location).toContain(`/elections/${election.id}/voters`);
   });
@@ -551,7 +538,6 @@ describe("Voting Routes", () => {
       .delete(`/voters/${voter.id}`)
       .send({ electionId: election.id, _csrf: csrfToken }) 
       .expect(200);
-    console.log("message from delete voter %s", res);
 
     let txt = res.text;
     txt = await JSON.parse(txt);
