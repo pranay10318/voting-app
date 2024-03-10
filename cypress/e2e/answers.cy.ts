@@ -1,6 +1,6 @@
 describe('Answer Management', () => {
     before( () => {
-        cy.visit('http://localhost:3000/');
+        cy.visit('https://online-voting-app-oyt9.onrender.com/');
 
         cy.get('#signup a').click();
         cy.get('input[name="firstName"]').type('pranay');
@@ -9,26 +9,25 @@ describe('Answer Management', () => {
         cy.get('input[name="password"]').type('pwd');
         cy.get('button[type="submit"]').click();
 
-        cy.url().should('include', 'http://localhost:3000/welcome');
+        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/welcome');
         
-        cy.visit('http://localhost:3000/welcome');
+        cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
         cy.get('a').contains('create a new election').click();
-        cy.url().should('include', 'http://localhost:3000/elections');
+        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/elections');
         cy.get('input[name="title"]').type('New Election Title');
         cy.get('button[type="submit"]').click();
-        cy.url().should('include', 'http://localhost:3000/elections/');
-        cy.visit('http://localhost:3000/welcome');
+        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/elections/');
+        cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
 
         cy.get('#count-New-Elections').should('contain', '1');
     });
 
     it('should create a question in an election and add one answer', () => {
-      cy.visit('http://localhost:3000/welcome');
+      cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
   
       // Navigate to Manage Election page
       cy.get('#manage-election').click();
-      cy.url().should('match', /http:\/\/localhost:3000\/elections\/\d+/);
-  
+      cy.url().should('match', /https:\/\/online-voting-app-oyt9.onrender.com\/elections\/\d+/);  
       // Navigate to Manage Questions page
       cy.get('#manage-questions').click();
       cy.url().should('include', '/questions');
@@ -53,16 +52,15 @@ describe('Answer Management', () => {
     });
   
     it('should edit an existing answer successfully', () => {
-      cy.visit('http://localhost:3000/login');
+      cy.visit('https://online-voting-app-oyt9.onrender.com/login');
       cy.get('input[name="email"]').type('pranay1@gmail.com');
       cy.get('input[name="password"]').type('pwd');
       cy.get('button[type="submit"]').click();
-      cy.url().should('include', 'http://localhost:3000/welcome');
+      cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/welcome');
   
       // Navigate to Manage Election page
       cy.get('#manage-election').click();
-      cy.url().should('match', /http:\/\/localhost:3000\/elections\/\d+/);
-  
+      cy.url().should('match', /https:\/\/online-voting-app-oyt9.onrender.com\/elections\/\d+/);  
       // Navigate to Manage Questions page
       cy.get('#manage-questions').click();
       cy.url().should('include', '/questions');
@@ -82,16 +80,15 @@ describe('Answer Management', () => {
     });
   
     it('should delete an existing answer successfully', () => {
-      cy.visit('http://localhost:3000/login');
+      cy.visit('https://online-voting-app-oyt9.onrender.com/login');
       cy.get('input[name="email"]').type('pranay1@gmail.com');
       cy.get('input[name="password"]').type('pwd');
       cy.get('button[type="submit"]').click();
-      cy.url().should('include', 'http://localhost:3000/welcome');
+      cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/welcome');
   
       // Navigate to Manage Election page
       cy.get('#manage-election').click();
-      cy.url().should('match', /http:\/\/localhost:3000\/elections\/\d+/);
-  
+      cy.url().should('match', /https:\/\/online-voting-app-oyt9.onrender.com\/elections\/\d+/);  
       // Navigate to Manage Questions page
       cy.get('#manage-questions').click();
       cy.url().should('include', '/questions');
@@ -105,7 +102,7 @@ describe('Answer Management', () => {
       cy.contains('Deleted Answer Title').should('not.exist');
     });
     after(() => {
-        cy.visit('http://localhost:3000/testDelete');
+        cy.visit('https://online-voting-app-oyt9.onrender.com/testDelete');
         cy.contains('Test delete done').should('exist');
     });
   });

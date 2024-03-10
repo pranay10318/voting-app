@@ -1,6 +1,6 @@
 describe('Login Test', () => {
     it('should sign up a new user successfully', () => {
-        cy.visit('http://localhost:3000/');
+        cy.visit('https://online-voting-app-oyt9.onrender.com/');
 
         cy.get('#signup a').click();
         cy.get('input[name="firstName"]').type('pranay');
@@ -9,20 +9,20 @@ describe('Login Test', () => {
         cy.get('input[name="password"]').type('pwd');
         cy.get('button[type="submit"]').click();
 
-        cy.url().should('include', 'http://localhost:3000/welcome');
+        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/welcome');
     });
   it('should login with valid credentials', () => {
-      cy.visit('http://localhost:3000/login');
+      cy.visit('https://online-voting-app-oyt9.onrender.com/login');
 
       cy.get('input[name="email"]').type('pranay1@gmail.com'); // Provide a valid email
       cy.get('input[name="password"]').type('pwd'); // Provide a valid password
       cy.get('button[type="submit"]').click();
 
-      cy.url().should('include', 'http://localhost:3000/welcome');
+      cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/welcome');
   });
 
   it('should display an error if email is not provided', () => {
-      cy.visit('http://localhost:3000/login');
+      cy.visit('https://online-voting-app-oyt9.onrender.com/login');
 
       cy.get('input[name="password"]').type('pwd'); // Provide a valid password
       cy.get('button[type="submit"]').click();
@@ -31,7 +31,7 @@ describe('Login Test', () => {
   });
 
   it('should display an error if password is not provided', () => {
-      cy.visit('http://localhost:3000/login');
+      cy.visit('https://online-voting-app-oyt9.onrender.com/login');
 
       cy.get('input[name="email"]').type('pranay1@gmail.com'); // Provide a valid email
       cy.get('button[type="submit"]').click();
@@ -40,7 +40,7 @@ describe('Login Test', () => {
   });
 
   it('should display an error if email or password is incorrect', () => {
-      cy.visit('http://localhost:3000/login');
+      cy.visit('https://online-voting-app-oyt9.onrender.com/login');
 
       cy.get('input[name="email"]').type('incorrectemail@gmail.com'); // Provide an incorrect email
       cy.get('input[name="password"]').type('incorrectpassword'); // Provide an incorrect password
@@ -50,13 +50,13 @@ describe('Login Test', () => {
   });
 
   it('should navigate to signup page when clicking "Sign-up" link', () => {
-    cy.visit('http://localhost:3000/login');
+    cy.visit('https://online-voting-app-oyt9.onrender.com/login');
 
     cy.contains("Sign-up").click();
-    cy.url().should('include', 'http://localhost:3000/signup');
+    cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/signup');
 });
 after(() => {
-    cy.visit('http://localhost:3000/testDelete');
+    cy.visit('https://online-voting-app-oyt9.onrender.com/testDelete');
     cy.contains('Test delete done').should('exist');
 });
 });
