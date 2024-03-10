@@ -16,10 +16,10 @@ export default class Elections extends Model {
   @Column(DataType.STRING)
   name!: string;
 
-  @Column(DataType.BOOLEAN)
+  @Column({type:DataType.BOOLEAN, defaultValue: false})
   started!: boolean;
 
-  @Column(DataType.BOOLEAN)
+  @Column({type:DataType.BOOLEAN, defaultValue: false})
   status!: boolean;
 
   @ForeignKey(() => Admins)

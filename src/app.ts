@@ -24,12 +24,22 @@ const config = require(".././config/config.json");
 const env = process.env.NODE_ENV || "development";
 const { database, username, password, host, port, dialect } = config[env];
 
-const sequelize = new Sequelize(database, username, password, {
-  host,
-  port,
-  dialect,
-  logging: false
-});
+let sequelize: Sequelize;
+if(config.use_env_variable){
+  const connectionString = process.env[config.use_env_variable];
+  if (!connectionString) {
+    throw new Error(`Environment variable ${config.use_env_variable} is not set`);
+  }
+  sequelize = new Sequelize(connectionString, config);
+}
+else {
+  sequelize = new Sequelize(database, username, password, {
+    host,
+    port,
+    dialect,
+    logging: false
+  });
+}
 
 sequelize.addModels([Admins, Elections, Questions, Answers, Voters]);
 
@@ -252,6 +262,7 @@ app.get(
         status: false,
       },
     });
+    console.log("onGoingElections : ", onGoingElections);
     const completedElections = await Elections.findAll({
       where: {
         adminId: loggedInadmin,
@@ -266,7 +277,10 @@ app.get(
         status: false,
       },
     });
+    console.log("newElections : ", newElections);
     if (request.accepts("html")) {
+      console.log("request from web");
+      console.log("data:", allElections, completedElections, newElections, onGoingElections);
       return response.render("welcome", {
         title: "My Elections",
         name: request.user?.firstName,
@@ -1018,6 +1032,24 @@ app.delete(
     }
   },
 );
+
+app.get("/testDelete", async (request: Request, response: Response) => {
+    if(env == "development") {
+      response.send("sORRY!!! Test delete is only available");
+      return;
+    }
+    else {
+      let res1 = await Elections.destroy({
+        where: {
+        },
+      });
+      let res2 = await Admins.destroy({
+        where: {
+        },
+      });
+      response.send("Test delete done");
+    }
+});
 
 
 export default app;

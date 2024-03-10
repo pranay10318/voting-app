@@ -12,12 +12,12 @@
                 <%= data[i].title%>
               </h1>
             </div>
-            <div class="flex-auto">
+            <div id="edit-answer" class="flex-auto">
               <a href="/edit-answer/<%= data[i].id %>/<%= questionId %>/<%= electionId %> " class="ml-2 text-sm text-purple-600 hover:cursor-pointer">
                 Edit
               </a>
             </div>
-            <div class="flex-auto">
+            <div class="delete-answer flex-auto">
               <button onclick="deleteAnswer(`<%= data[i].id%>`)" class="ml-2 text-sm text-red-600 hover:cursor-pointer">
                 Delete
               </button>

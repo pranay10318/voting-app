@@ -16,7 +16,7 @@ export default class Voters extends Model {
   @Column(DataType.STRING)
   password!: string;
 
-  @Column(DataType.BOOLEAN)
+  @Column({type: DataType.BOOLEAN, defaultValue: false})
   status!: boolean;
 
   @ForeignKey(() => Elections)

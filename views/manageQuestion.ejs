@@ -61,7 +61,7 @@
           /<a href="/elections/<%=electionId%>">ManageElection</a>/<a href="/elections/<%=electionId%>/Questions">Manage-Questions</a>/<a href="/questionsDetails/<%= questionId%>/<%= electionId%>">Manage-Question</a>
         </h1>
         <a href="/signout" class="bg-red-600 text-white px-0.5 py-0.5 rounded font-mediium">Sign out</a>
-        <h1 class="text-red-700 text-xl mt-4"><%= question.title%> <a  class="bg-green-600 text-white px-0.5 py-0.5 rounded font-mediium hover:cursor-pointer"  href="/edit-question/<%= question.id %>/<%= electionId %> ">Edit</a></h1>
+        <h1 class="text-red-700 text-xl mt-4"><%= question.title%> <a id="edit-question"  class="bg-green-600 text-white px-0.5 py-0.5 rounded font-mediium hover:cursor-pointer"  href="/edit-question/<%= question.id %>/<%= electionId %> ">Edit</a></h1>
         <h2><%= question.description%></h2>
         <form action="/questions/<%= question.id%>/answer/<%= electionId %> " method="post">
           <div class="flex gap-2 py-4">
@@ -78,6 +78,7 @@
               <input
                 type="submit"
                 class="bg-green-600 text-white px-5 py-2 rounded font-mediium py-1.5 hover:cursor-pointer"
+                id="add-answer"
                 value="ADD"
               >
                 
