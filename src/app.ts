@@ -23,12 +23,11 @@ import Voters from "../models/Voters";
 const config = require(".././config/config.json");
 const env = process.env.NODE_ENV || "development";
 
-
 let sequelize: Sequelize;
-if(config.use_env_variable){
-  const connectionString = process.env[config.use_env_variable];
+if(config[env].use_env_variable){
+  const connectionString = process.env[config[env].use_env_variable];
   if (!connectionString) {
-    throw new Error(`Environment variable ${config.use_env_variable} is not set`);
+    throw new Error(`Environment variable ${config[env].use_env_variable} is not set`);
   }
   sequelize = new Sequelize(connectionString, config[env]);
 }
