@@ -1,7 +1,7 @@
 
 describe('Launch Election', () => {
     before( () => {
-        cy.visit('https://online-voting-app-oyt9.onrender.com/');
+        cy.visit('http://localhost:3000/');
 
         cy.get('#signup a').click();
         cy.get('input[name="firstName"]').type('pranay');
@@ -10,26 +10,26 @@ describe('Launch Election', () => {
         cy.get('input[name="password"]').type('pwd');
         cy.get('button[type="submit"]').click();
 
-        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/welcome');
+        cy.url().should('include', 'http://localhost:3000/welcome');
     });
 
     it('should raise error when minimum requirements are not met', () => {
-        cy.visit('https://online-voting-app-oyt9.onrender.com/login');
+        cy.visit('http://localhost:3000/login');
         cy.get('input[name="email"]').type('pranay1@gmail.com');
         cy.get('input[name="password"]').type('pwd');
         cy.get('button[type="submit"]').click();
 
         // create a election
-        cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
+        cy.visit('http://localhost:3000/welcome');
         cy.get('a').contains('create a new election').click();
-        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/elections');
+        cy.url().should('include', 'http://localhost:3000/elections');
         cy.get('input[name="title"]').type('New Election Title');
         cy.get('button[type="submit"]').click();
 
         // try to launch the election  without minimum questions and voters
-        cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
+        cy.visit('http://localhost:3000/welcome');
         cy.get('#manage-election').click();
-        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/elections/');
+        cy.url().should('include', 'http://localhost:3000/elections/');
         cy.contains('Manage Questions').should('exist');
         cy.contains('Manage Voters').should('exist');
         cy.contains('Launch Election').should('exist');
@@ -39,15 +39,15 @@ describe('Launch Election', () => {
     }  ); 
 
     it('should raise error when minimum voters are not added', () => {
-        cy.visit('https://online-voting-app-oyt9.onrender.com/login');
+        cy.visit('http://localhost:3000/login');
         cy.get('input[name="email"]').type('pranay1@gmail.com');
         cy.get('input[name="password"]').type('pwd');
         cy.get('button[type="submit"]').click();
 
-        cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
+        cy.visit('http://localhost:3000/welcome');
 
         cy.get('#manage-election').click();
-        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/elections/');
+        cy.url().should('include', 'http://localhost:3000/elections/');
         cy.contains('Manage Questions').should('exist');
         cy.contains('Manage Voters').should('exist');
         cy.contains('Launch Election').should('exist');
@@ -74,33 +74,33 @@ describe('Launch Election', () => {
         cy.get('form').submit();
         cy.contains('New Answer Title1').should('exist');
 
-        cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
+        cy.visit('http://localhost:3000/welcome');
 
         cy.get('#manage-election').click();
-        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/elections/');
+        cy.url().should('include', 'http://localhost:3000/elections/');
         cy.get('a').contains('Launch Election').click();
 
         cy.contains('election cannot be launched').should('exist');
     });
 
     it('should add voters successfully', () => {
-        cy.visit('https://online-voting-app-oyt9.onrender.com/login');
+        cy.visit('http://localhost:3000/login');
         cy.get('input[name="email"]').type('pranay1@gmail.com');
         cy.get('input[name="password"]').type('pwd');
         cy.get('button[type="submit"]').click();
 
-        cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
+        cy.visit('http://localhost:3000/welcome');
 
         cy.get('#manage-election').click();
 
-        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/elections/');
+        cy.url().should('include', 'http://localhost:3000/elections/');
         cy.contains('Manage Questions').should('exist');
         cy.contains('Manage Voters').should('exist');
         cy.contains('Launch Election').should('exist');
 
         cy.contains('Manage Voters').click();
         // /elections/:id/voters
-        cy.url().should('match', /https:\/\/online-voting-app-oyt9.onrender.com\/elections\/\d+\/voters/);
+        cy.url().should('match', /http:\/\/localhost:3000\/elections\/\d+\/voters/);
 
         cy.get('input[name="name"]').type('New Voter Name1');
         cy.get('input[name="password"]').type('New Voter Password');
@@ -122,15 +122,15 @@ describe('Launch Election', () => {
 
 
     it('should launch election successfully', () => {
-        cy.visit('https://online-voting-app-oyt9.onrender.com/login');
+        cy.visit('http://localhost:3000/login');
         cy.get('input[name="email"]').type('pranay1@gmail.com');
         cy.get('input[name="password"]').type('pwd');
         cy.get('button[type="submit"]').click();
 
-        cy.visit('https://online-voting-app-oyt9.onrender.com/welcome');
+        cy.visit('http://localhost:3000/welcome');
 
         cy.get('#manage-election').click();
-        cy.url().should('include', 'https://online-voting-app-oyt9.onrender.com/elections/');
+        cy.url().should('include', 'http://localhost:3000/elections/');
         cy.contains('Manage Questions').should('exist');
         cy.contains('Manage Voters').should('exist');
         cy.contains('Launch Election').should('exist');
@@ -141,10 +141,8 @@ describe('Launch Election', () => {
 
     });
     after(() => {
-        cy.visit('https://online-voting-app-oyt9.onrender.com/testDelete');
+        cy.visit('http://localhost:3000/testDelete');
         cy.contains('Test delete done').should('exist');
     });
 
 });
-
-
