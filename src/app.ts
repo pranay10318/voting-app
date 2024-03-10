@@ -22,7 +22,7 @@ import { assert } from "console";
 import Voters from "../models/Voters";
 const config = require(".././config/config.json");
 const env = process.env.NODE_ENV || "development";
-const { database, username, password, host, port, dialect } = config[env];
+
 
 let sequelize: Sequelize;
 if(config.use_env_variable){
@@ -30,9 +30,10 @@ if(config.use_env_variable){
   if (!connectionString) {
     throw new Error(`Environment variable ${config.use_env_variable} is not set`);
   }
-  sequelize = new Sequelize(connectionString, config);
+  sequelize = new Sequelize(connectionString, config[env]);
 }
 else {
+  const { database, username, password, host, port, dialect } = config[env];
   sequelize = new Sequelize(database, username, password, {
     host,
     port,
