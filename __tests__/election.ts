@@ -74,26 +74,26 @@ describe("Voting Application Login SignUp", function () {
       _csrf: csrfToken,
     });
 
-    expect(res.statusCode).toBe(302);
-    expect(res.headers.location).toBe("/welcome");
-    expect(res.headers["set-cookie"]).toBeDefined();
+    expect(res.statusCode).to?.equal(302);
+    expect(res.headers.location).to?.equal("/welcome");
+    expect(res.headers["set-cookie"]).to?.exist;
     await signout();
   });
 
   test("Sign out", async () => {
     await login("n@n.in", "123");
     let res = await agent.get("/welcome");
-    expect(res.statusCode).toBe(200);
+    expect(res.statusCode).to?.equal(200);
     res = await agent.get("/signout");
-    expect(res.statusCode).toBe(302);
+    expect(res.statusCode).to?.equal(302);
     res = await agent.get("/welcome");
-    expect(res.statusCode).toBe(302);
+    expect(res.statusCode).to?.equal(302);
   });
 
   test("Login", async () => {
     await login("n@n.in", "123");
     let res = await agent.get("/welcome");
-    expect(res.statusCode).toBe(200);
+    expect(res.statusCode).to?.equal(200);
     await signout();
   });
 
@@ -112,8 +112,8 @@ describe("Voting Application Login SignUp", function () {
       _csrf: csrfToken,
     });
 
-    expect(res.statusCode).toBe(302);
-    expect(res.headers.location).toBe("/signup");
+    expect(res.statusCode).to?.equal(302);
+    expect(res.headers.location).to?.equal("/signup");
     await signout();
   });
 
@@ -125,8 +125,8 @@ describe("Voting Application Login SignUp", function () {
       password: "1234",
       _csrf: csrfToken,
     });
-    expect(res.statusCode).toBe(302);
-    expect(res.headers.location).toBe("/login");
+    expect(res.statusCode).to?.equal(302);
+    expect(res.headers.location).to?.equal("/login");
     await signout();
   }
   );
@@ -140,8 +140,8 @@ describe("Voting Application Login SignUp", function () {
       _csrf: csrfToken,
     });
 
-    expect(res.statusCode).toBe(302);
-    expect(res.headers.location).toBe("/login");
+    expect(res.statusCode).to?.equal(302);
+    expect(res.headers.location).to?.equal("/login");
     await signout();
   });
 });
@@ -156,13 +156,13 @@ describe("Election", function () {
         description: "Election 1 Description",
         _csrf: csrfToken,
       });
-      expect(res.statusCode).toBe(302);
-      expect(res.headers.location).toBe("/elections/1");// id would be 1 as it is the first election
+      expect(res.statusCode).to?.equal(302);
+      expect(res.headers.location).to?.equal("/elections/1");// id would be 1 as it is the first election
     });
 
     test("View Election", async () => {
       let res = await agent.get("/elections");
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).to?.equal(200);
     });
 
 
@@ -173,11 +173,11 @@ describe("Election", function () {
         _csrf: extractCsrfToken(res),
       });
       
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).to?.equal(200);
 
       let txt = res.text;
       txt = await JSON.parse(txt);
-      expect(txt.success).toBe(true);
+      expect(txt.success).to?.equal(true);
     });
 
     test("Create Election with empty title", async () => {
@@ -188,7 +188,7 @@ describe("Election", function () {
         description: "Election 1 Description",
         _csrf: csrfToken,
       });
-      expect(res.ok).toBe(false);
+      expect(res.ok).to?.equal(false);
     });
 
     test("Create Election with empty description", async () => {
@@ -200,7 +200,7 @@ describe("Election", function () {
         _csrf: csrfToken,
       });
 
-      expect(res.ok).toBe(false);
+      expect(res.ok).to?.equal(false);
     });
 
   });
@@ -229,9 +229,9 @@ describe("Election", function () {
       where: { electionId: election.id }
     });
 
-    expect(questions.length).toBe(1);
-    expect(questions[0].title).toBe(questionData.title);
-    expect(questions[0].description).toBe(questionData.description);
+    expect(questions.length).to?.equal(1);
+    expect(questions[0].title).to?.equal(questionData.title);
+    expect(questions[0].description).to?.equal(questionData.description);
   });
   
   // Test for GET /elections/:id/questions
@@ -244,7 +244,7 @@ describe("Election", function () {
       .expect(200);
     
     const questions = response.body.questions;
-    expect(questions.length).toBe(0);
+    expect(questions.length).to?.equal(0);
 
     const question = await Questions.create({
       title: 'Test Question',
@@ -252,7 +252,7 @@ describe("Election", function () {
       electionId: election.id
     });
 
-    expect(questions.length).toBe(0);
+    expect(questions.length).to?.equal(0);
 
   });
   
@@ -310,8 +310,8 @@ describe("Election", function () {
       .expect(302);
 
     const updatedQuestion: any = await Questions.findByPk(question.id);
-    expect(updatedQuestion.title).toBe(updatedTitle);
-    expect(updatedQuestion.description).toBe(updatedDescription);
+    expect(updatedQuestion.title).to?.equal(updatedTitle);
+    expect(updatedQuestion.description).to?.equal(updatedDescription);
   });
 
   // Test for DELETE /questions/:id
@@ -333,7 +333,7 @@ describe("Election", function () {
       .expect(200);
 
     const deletedQuestion = await Questions.findByPk(question.id);
-    expect(deletedQuestion).toBeNull();
+    expect(deletedQuestion).to?.be.null;
     await signout();
   });
 });
@@ -363,7 +363,7 @@ describe("Test Answers", () => {
       .post(`/questions/${question.id}/answer/${election.id}`)
       .send({ title: "Test Answer", _csrf: csrfToken})
       .expect(302); 
-    expect(response.headers.location).toContain(`/questionsDetails/${question.id}/${election.id}`);
+    expect(response.headers.location).to?.include(`/questionsDetails/${question.id}/${election.id}`);
   });
 
   test("Should not add an answer if title is empty", async () => {
@@ -379,8 +379,8 @@ describe("Test Answers", () => {
       .post(`/questions/${question.id}/answer/${election.id}`)
       .send({ title: "" , _csrf: csrfToken})
       .expect(302); 
-    expect(response.headers.location).toContain(`/questionsDetails/${question.id}/${election.id}`);
-    expect(response.ok).toBe(false);
+    expect(response.headers.location).to?.include(`/questionsDetails/${question.id}/${election.id}`);
+    expect(response.ok).to?.equal(false);
   });
 
 
@@ -399,8 +399,8 @@ describe("Test Answers", () => {
       .send({ _csrf: csrfToken})
       .expect(200);
 
-    expect(response.text).toContain("Edit-Answer");
-    expect(response.text).toContain(answer.title);
+    expect(response.text).to?.include("Edit-Answer");
+    expect(response.text).to?.include(answer.title);
   });
 
   test("Should update an answer", async () => {
@@ -420,10 +420,10 @@ describe("Test Answers", () => {
       .send({ title: updatedTitle, _csrf: csrfToken})
       .expect(302); 
 
-    expect(response.headers.location).toContain(`/questionsDetails/${question.id}/${election.id}`);
+    expect(response.headers.location).to?.include(`/questionsDetails/${question.id}/${election.id}`);
 
     const updatedAnswer: any = await Answers.findByPk(answer.id);
-    expect(updatedAnswer.title).toBe(updatedTitle);
+    expect(updatedAnswer.title).to?.equal(updatedTitle);
   });
 
   test("Should delete an answer", async () => {
@@ -441,10 +441,10 @@ describe("Test Answers", () => {
       .delete(`/answers/${answer.id}`)
       .send({ _csrf: csrfToken, questionId: question.id, electionId: election.id})
       .expect(200);
-    expect(response.body.success).toBe(true);
+    expect(response.body.success).to?.equal(true);
 
     const deletedAnswer = await Answers.findByPk(answer.id);
-    expect(deletedAnswer).toBeNull();
+    expect(deletedAnswer).to?.equal(null);
   });
 });
 
@@ -459,7 +459,7 @@ describe("Voting Routes", () => {
       .get(`/elections/${electionId}/voters`)
       .send({ _csrf: csrfToken })
       .expect(200);
-    expect(res.ok).toBe(true);
+    expect(res.ok).to?.equal(true);
   });
 
   // Test for POST /elections/:id/voters
@@ -471,7 +471,7 @@ describe("Voting Routes", () => {
       .send({ name: "Test Voter", password: "123456", _csrf: csrfToken }) 
       .expect(302);
     
-    expect(res.headers.location).toContain(`/elections/${election.id}/voters`);
+    expect(res.headers.location).to?.include(`/elections/${election.id}/voters`);
   });
 
   // Test for GET /elections/:id/launch
@@ -483,7 +483,7 @@ describe("Voting Routes", () => {
       .send({ _csrf: csrfToken }) 
       .expect(302);
     
-    expect(res.headers.location).toContain(`/elections/${electionId}`);
+    expect(res.headers.location).to?.include(`/elections/${electionId}`);
   });
 
   // Test for GET /voter-login/:id/:election
@@ -509,7 +509,7 @@ describe("Voting Routes", () => {
       .expect(302); 
     
     
-    expect(res.headers.location).toBe(`/conduct-election/${election.id}/test-election/${voter.id}`);
+    expect(res.headers.location).to?.equal(`/conduct-election/${election.id}/test-election/${voter.id}`);
   });
 
   // Test for GET /conduct-election/:id/:election/:vid
@@ -541,6 +541,6 @@ describe("Voting Routes", () => {
 
     let txt = res.text;
     txt = await JSON.parse(txt);
-    expect(txt.success).toBe(true);
+    expect(txt.success).to?.equal(true);
   });
 });
