@@ -9,7 +9,7 @@
     "dev": "nodemon src/index.ts",
     "start:prod": "npx ts-node src/index.ts",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
-    "test": "NODE_ENV=test jest --json --outputFile=results.json --detectOpenHandles --coverage"
+    "test": "NODE_ENV=test jest  --detectOpenHandles --coverage"
   },
   "keywords": [],
   "author": "",

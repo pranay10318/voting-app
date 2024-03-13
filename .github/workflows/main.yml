@@ -41,7 +41,7 @@ jobs:
         run: npm ci
 
       - name: Run unit tests with coverage
-        run: npm test -- --coverage
+        run: npm test
       - name: Run the app
         id: run-app
         run: |
@@ -56,4 +56,4 @@ jobs:
         run: |
           npm install cypress cypress-json-results nyc
           npx cypress run
-          npx nyc report --reporter=text-lcov > coverage.lcov
+          npx nyc report --reporter=text-summary
