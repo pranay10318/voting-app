@@ -52,7 +52,8 @@ jobs:
           PORT=3000 NODE_ENV=test npx ts-node src/index.ts &
           sleep 5
 
-      - name: Run integration tests
-        run: |
-          npm install cypress cypress-json-results nyc
-          npx nyc --reporter=text-summary npx cypress run
+          - name: Run integration tests with coverage
+          run: |
+            npm install cypress cypress-json-results nyc
+            COVERAGE_PERCENTAGE=$(npx nyc --reporter=text-summary npx cypress run)
+            echo "::set-output name=coverage_percentage::$COVERAGE_PERCENTAGE"
