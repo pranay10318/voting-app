@@ -55,5 +55,4 @@ jobs:
           - name: Run integration tests with coverage
           run: |
             npm install cypress cypress-json-results nyc
-            COVERAGE_PERCENTAGE=$(npx nyc --reporter=text-summary npx cypress run)
-            echo "::set-output name=coverage_percentage::$COVERAGE_PERCENTAGE"
+            npx nyc --reporter=text-summary npx cypress run
