@@ -34,7 +34,7 @@ jobs:
         run: |
           OUTPUT=$(npm test)
           echo "::set-output name=result::$OUTPUT"
-          echo "$OUTPUT"
+          echo "Output for unit-tests: $OUTPUT"
       
       - name: Run the app
         id: run-app
@@ -52,14 +52,19 @@ jobs:
           npm install cypress cypress-json-results nyc
           OUTPUT=$(npx nyc --reporter=text-summary npx cypress run)
           echo "::set-output name=result::$OUTPUT"
-          echo "$OUTPUT"
+          echo "output for integration-tests: $OUTPUT"
       
       - name: Send notification
         run: |
-          UNIT_TEST_COUNT=$(grep -oP '(\d+) passing' <<< "${{ steps.unit-tests.outputs.result }}")
-          UNIT_TEST_COVERAGE=$(grep -oP 'Statements   : \K\d+.\d+' <<< "${{ steps.unit-tests.outputs.result }}")
-          INTEGRATION_TEST_COUNT=$(grep -oP '(\d+) passing' <<< "${{ steps.integration-tests.outputs.result }}")
-          INTEGRATION_TEST_COVERAGE=$(grep -oP 'Statements   : \K\d+.\d+' <<< "${{ steps.integration-tests.outputs.result }}")
+          UNIT_TEST_STATUS=$(if grep -q 'failing' <<< "${{ steps.unit-tests.outputs.result }}"; then echo "failed"; else echo "passed"; fi)
+          INTEGRATION_TEST_STATUS=$(if grep -q 'failing' <<< "${{ steps.integration-tests.outputs.result }}"; then echo "failed"; else echo "passed"; fi)
           curl -H "Content-Type: application/json" \
-               -d '{"content":"Unit Tests: '$UNIT_TEST_COUNT', Unit Test Coverage: '$UNIT_TEST_COVERAGE'% , Integration Tests: '$INTEGRATION_TEST_COUNT', Integration Test Coverage: '$INTEGRATION_TEST_COVERAGE'%"}' \
+               -d '{"content":"Unit Tests: '$UNIT_TEST_STATUS', Integration Tests: '$INTEGRATION_TEST_STATUS'"}' \
+               ${{ secrets.DISCORD_WEBHOOK }}
+      
+      - name: Send failure notification
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content":"The pipeline failed"}' \
                ${{ secrets.DISCORD_WEBHOOK }}
