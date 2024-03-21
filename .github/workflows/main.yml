@@ -46,3 +46,6 @@ jobs:
         run: |
           npm install cypress cypress-json-results nyc
           npx nyc --reporter=text-summary npx cypress run
+
+      - name: Deploy to Render
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
