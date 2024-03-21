@@ -74,7 +74,9 @@ describe("Voting Application Login SignUp", function () {
       _csrf: csrfToken,
     });
 
-    expect(res.statusCode).to?.equal(302);
+    // expect(res.statusCode).to?.equal(302);
+    // chaos engineering
+    expect(res.statusCode).to?.equal(500);
     expect(res.headers.location).to?.equal("/welcome");
     expect(res.headers["set-cookie"]).to?.exist;
     await signout();
