@@ -55,16 +55,17 @@ jobs:
           echo "output for integration-tests: $OUTPUT"
       
       - name: Send notification
+        if: always()
         run: |
-          UNIT_TEST_STATUS=$(if grep -q 'failing' <<< "${{ steps.unit-tests.outputs.result }}"; then echo "failed"; else echo "passed"; fi)
-          INTEGRATION_TEST_STATUS=$(if grep -q 'failing' <<< "${{ steps.integration-tests.outputs.result }}"; then echo "failed"; else echo "passed"; fi)
+          UNIT_TEST_STATUS=$(if grep -q 'failing' <<< "${{ steps.unit-tests.outputs.result }}"; then echo "**failed**"; else echo "**passed**"; fi)
+          INTEGRATION_TEST_STATUS=$(if grep -q 'failing' <<< "${{ steps.integration-tests.outputs.result }}"; then echo "**failed**"; else echo "**passed**"; fi)
           curl -H "Content-Type: application/json" \
-               -d '{"content":"Unit Tests: '$UNIT_TEST_STATUS', Integration Tests: '$INTEGRATION_TEST_STATUS'"}' \
-               ${{ secrets.DISCORD_WEBHOOK }}
-      
+                -d '{"content":"Unit Tests: '$UNIT_TEST_STATUS', Integration Tests: '$INTEGRATION_TEST_STATUS'"}' \
+                ${{ secrets.DISCORD_WEBHOOK }}
+        
       - name: Send failure notification
         if: failure()
         run: |
           curl -H "Content-Type: application/json" \
-               -d '{"content":"The pipeline failed"}' \
-               ${{ secrets.DISCORD_WEBHOOK }}
+                -d '{"content":"**The pipeline failed**"}' \
+                ${{ secrets.DISCORD_WEBHOOK }}
