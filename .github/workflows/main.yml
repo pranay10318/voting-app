@@ -47,24 +47,6 @@ jobs:
         run: |
           npm install cypress cypress-json-results nyc
           npx nyc --reporter=text-summary npx cypress run
-
-  deploy-to-render:
-    name: Deploy to Render
-    runs-on: ubuntu-latest
-    needs: build-and-test
-
-    steps:
-      - name: Deploy to Render
-        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
-
-  send-notifications:
-    name: Send Notifications
-    runs-on: ubuntu-latest
-    needs: build-and-test
-
-    if: always()
-
-    steps:
       - name: Send Success Notification
         if: success()
         run: |
@@ -78,3 +60,13 @@ jobs:
           curl -H "Content-Type: application/json" \
                 -d '{"content":"**Pipeline is Failed**"}' \
                 ${{ secrets.DISCORD_WEBHOOK }}
+
+  deploy-to-render:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Deploy to Render
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
