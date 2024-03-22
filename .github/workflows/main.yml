@@ -53,24 +53,20 @@ jobs:
           OUTPUT=$(npx nyc --reporter=text-summary npx cypress run)
           echo "::set-output name=result::$OUTPUT"
           echo "output for integration-tests: $OUTPUT"
-      
-      - name: Send notification
-        if: always()
-        run: |
-          UNIT_TEST_STATUS=$(if grep -q 'failing' <<< "${{ steps.unit-tests.outputs.result }}"; then echo "**failed**"; else echo "**passed**"; fi)
-          INTEGRATION_TEST_STATUS=$(if grep -q 'failing' <<< "${{ steps.integration-tests.outputs.result }}"; then echo "**failed**"; else echo "**passed**"; fi)
-          echo "Unit Tests Output: ${{ steps.unit-tests.outputs.result }}"
-          echo "Integration Tests Output: ${{ steps.integration-tests.outputs.result }}"
-          curl -H "Content-Type: application/json" \
-                -d '{"content":"Unit Tests: '$UNIT_TEST_STATUS', Integration Tests: '$INTEGRATION_TEST_STATUS'"}' \
-                ${{ secrets.DISCORD_WEBHOOK }}
 
-      - name: Send failure notification
-        if: failure()
+      - name: Deploy to Render
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+        
+      - name: Send Success Notification
+        if: success()
         run: |
-          echo "Unit Tests Output: ${{ steps.unit-tests.outputs.result }}"
-          echo "Integration Tests Output: ${{ steps.integration-tests.outputs.result }}"
           curl -H "Content-Type: application/json" \
                 -d '{"content":"**The pipeline failed**"}' \
                 ${{ secrets.DISCORD_WEBHOOK }}
-      
+
+      - name: Send Failure Notification
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+                -d '{"content":"**The pipeline failed**"}' \
+                ${{ secrets.DISCORD_WEBHOOK }}
