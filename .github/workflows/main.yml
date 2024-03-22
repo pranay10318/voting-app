@@ -66,6 +66,8 @@ jobs:
       - name: Send failure notification
         if: failure()
         run: |
+          echo "Unit Tests Output: ${{ steps.unit-tests.outputs.result }}"
+          echo "Integration Tests Output: ${{ steps.integration-tests.outputs.result }}"
           curl -H "Content-Type: application/json" \
                 -d '{"content":"**The pipeline failed**"}' \
                 ${{ secrets.DISCORD_WEBHOOK }}
