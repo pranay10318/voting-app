@@ -9,7 +9,7 @@ describe('Answer Management', () => {
         cy.get('input[name="password"]').type('pwd');
         cy.get('button[type="submit"]').click();
 
-        cy.url().should('include', 'http://localhost:3000/welcomeErr');
+        cy.url().should('include', 'http://localhost:3000/welcome');
         
         cy.visit('http://localhost:3000/welcome');
         cy.get('a').contains('create a new election').click();

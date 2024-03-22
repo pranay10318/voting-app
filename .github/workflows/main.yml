@@ -15,7 +15,7 @@ jobs:
         env:
           POSTGRES_USER: ${{ secrets.PG_USER }}
           POSTGRES_PASSWORD: ${{ secrets.PG_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.PG_DATABASE }}
+          POSTGRES_DB: ${{ vars.PG_DATABASE }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
