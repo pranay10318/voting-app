@@ -34,6 +34,15 @@ jobs:
       - name: Run Unit Tests with Coverage
         run: npm test
 
+      - name: Run the Application
+        run: |
+          npm install
+          npx sequelize-cli db:drop
+          npx sequelize-cli db:create
+          npx sequelize-cli db:migrate
+          PORT=3000 NODE_ENV=test npx ts-node src/index.ts &
+          sleep 5
+
       - name: Run Integration Tests
         run: |
           npm install cypress cypress-json-results nyc
