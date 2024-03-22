@@ -1,7 +1,7 @@
 name: Voting Application
 on: push
 env:
-  PG_DATABASE: wd-todo-test
+  PG_DATABASE: vote-test-db
   PG_USER: postgres
   PG_PASSWORD: postgres
 jobs:
@@ -32,9 +32,7 @@ jobs:
       - name: Run unit tests with coverage
         id: unit-tests
         run: |
-          OUTPUT=$(npm test)
-          echo "::set-output name=result::$OUTPUT"
-          echo "Output for unit-tests: $OUTPUT"
+          npm test
       
       - name: Run the app
         id: run-app
@@ -50,9 +48,7 @@ jobs:
         id: integration-tests
         run: |
           npm install cypress cypress-json-results nyc
-          OUTPUT=$(npx nyc --reporter=text-summary npx cypress run)
-          echo "::set-output name=result::$OUTPUT"
-          echo "output for integration-tests: $OUTPUT"
+          npx nyc --reporter=text-summary npx cypress run
 
       - name: Deploy to Render
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
@@ -61,12 +57,12 @@ jobs:
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
-                -d '{"content":"**The pipeline failed**"}' \
+                -d '{"content":"**Pipeline is Passed**"}' \
                 ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Send Failure Notification
         if: failure()
         run: |
           curl -H "Content-Type: application/json" \
-                -d '{"content":"**The pipeline failed**"}' \
+                -d '{"content":"**Pipeline is Failed**"}' \
                 ${{ secrets.DISCORD_WEBHOOK }}
