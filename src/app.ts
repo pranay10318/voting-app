@@ -9,7 +9,7 @@ import passport from "passport";
 import connectEnsureLogin from "connect-ensure-login";
 import session from "express-session";
 import { Strategy as LocalStrategy } from "passport-local";
-const bcrypt: any = require("bcrypt");
+import * as bcrypt from 'bcryptjs';
 import flash from "connect-flash";
 dotenv.config();
 
@@ -21,18 +21,22 @@ import Answers from "../models/Answers";
 import { assert } from "console";
 import Voters from "../models/Voters";
 const config = require(".././config/config.json");
-const env = process.env.NODE_ENV || "development";
+const envv = (process.env.NODE_ENV == undefined) ? "development": process.env.NODE_ENV;
+console.log("env:", envv);
+// print the config
+console.log (config[envv]);
+
 
 let sequelize: Sequelize;
-if(config[env].use_env_variable){
-  const connectionString = process.env[config[env].use_env_variable];
+if(config[envv]?.use_env_variable){
+  const connectionString = process.env[config[envv]?.use_env_variable];
   if (!connectionString) {
-    throw new Error(`Environment variable ${config[env].use_env_variable} is not set`);
+    throw new Error(`Environment variable ${config[envv]?.use_env_variable} is not set`);
   }
-  sequelize = new Sequelize(connectionString, config[env]);
+  sequelize = new Sequelize(connectionString, config[envv]);
 }
 else {
-  const { database, username, password, host, port, dialect } = config[env];
+  const { database, username, password, host, port, dialect } = config[envv];
   sequelize = new Sequelize(database, username, password, {
     host,
     port,
@@ -1034,7 +1038,7 @@ app.delete(
 );
 
 app.get("/testDelete", async (request: Request, response: Response) => {
-    if(env == "development") {
+    if(envv == "development") {
       response.send("sORRY!!! Test delete is only available");
       return;
     }
