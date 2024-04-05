@@ -8,10 +8,10 @@ ENV NODE_ENV=production
 RUN npm i -g husky
 COPY . /app
 RUN npm install --production
-CMD npm run start:prod
+CMD npm run start
 
 FROM base as dev
 ENV NODE_ENV=development
 COPY . /app
-RUN npm install -g nodemon && npm install -g pm2 && npm install
-CMD npm run start:prod
+RUN npm install
+CMD npm run start

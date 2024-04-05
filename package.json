@@ -5,9 +5,10 @@
   "main": "dist/main.bundle.js",
   "scripts": {
     "build": "npx webpack",
-    "start": "node dist/src/main.bundle.js",
+    "start": "npx ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
-    "start:prod": "npx ts-node src/index.ts",
+    "start:dev": "NODE_ENV=development npx ts-node src/index.ts",
+    "start:prod": "NODE_ENV=production npx ts-node src/index.ts",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
     "test": "NODE_ENV=test jest  --detectOpenHandles --coverage",
     "migrate": "npx sequelize-cli db:migrate"

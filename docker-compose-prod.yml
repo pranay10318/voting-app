@@ -21,9 +21,9 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: $DEV_USERNAME
-      POSTGRES_DB: $DEV_DATABASE
-      POSTGRES_PASSWORD: $DEV_PASSWORD
+      POSTGRES_USER: $PROD_USERNAME
+      POSTGRES_DB: $PROD_DATABASE
+      POSTGRES_PASSWORD: $PROD_PASSWORD
 
 volumes:
   pg-dev-data:

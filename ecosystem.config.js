@@ -1,36 +1,18 @@
-// module.exports = {
-//     apps: [{
-//       name: "voting-app",
-//       script: "src/index.ts",
-//       instances: "max",
-//       autorestart: true,
-//       watch: false,
-//       max_memory_restart: "1G",
-//       env: {
-//         NODE_ENV: "production"
-//       },
-//       env_production: {
-//         NODE_ENV: "production"
-//       }
-//     }]
-//   };
-  
-
 module.exports = {
   apps: [
       {
           name: "voting-app",
           script: "npm",
-          automation: false,
-          args: "run start:prod",
-          watch: true,
-          instances: "2",
+          args: "run start",
+          watch: false,
+          instances: "max", // enables cluster mode, and allows load balancing across all cores.
           env: {
               NODE_ENV: "development"
           },
           env_production: {
               NODE_ENV: "production"
-          }
+          },
+          out_file: "logs/out.log" // pm2 restarts whenever watch is true and changes in cur dir
       }
   ]
 }
