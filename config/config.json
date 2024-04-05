@@ -3,7 +3,7 @@
     "username": "postgres",
     "password": "postgres",
     "database": "vote-db",
-    "host": "voting-app-db-1",
+    "host": "127.0.0.1",
     "port": 5432,
     "dialect": "postgres"
   },
@@ -11,12 +11,16 @@
     "username": "postgres",
     "password": "postgres",
     "database": "vote-test-db",
-    "host": "voting-app-db-1",
+    "host": "localhost",
     "port": 5432,
     "dialect": "postgres"
   },
   "production": {
-    "use_env_variable": "DATABASE_URL",
+    "username": "postgres",
+    "password": "postgres",
+    "database": "vote-prod-db",
+    "host": "localhost",
+    "port": 5432,
     "dialect": "postgres"
   }
 }

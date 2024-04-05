@@ -20,9 +20,9 @@ import Questions from "../models/Questions";
 import Answers from "../models/Answers";
 import { assert } from "console";
 import Voters from "../models/Voters";
-const config = require(".././config/config.json");
+const config = require(".././config/config.js");
 const envv = (process.env.NODE_ENV == undefined) ? "development": process.env.NODE_ENV;
-console.log("env:", envv);
+console.log("The Application has been started in ", envv);
 // print the config
 console.log (config[envv]);
 
