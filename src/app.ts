@@ -20,12 +20,9 @@ import Questions from "../models/Questions";
 import Answers from "../models/Answers";
 import { assert } from "console";
 import Voters from "../models/Voters";
-const config = require(".././config/config.js");
+const config = require(".././config/config.json");
 const envv = (process.env.NODE_ENV == undefined) ? "development": process.env.NODE_ENV;
 console.log("The Application has been started in ", envv);
-// print the config
-console.log (config[envv]);
-
 
 let sequelize: Sequelize;
 if(config[envv]?.use_env_variable){
@@ -35,16 +32,19 @@ if(config[envv]?.use_env_variable){
   }
   sequelize = new Sequelize(connectionString, config[envv]);
 }
-else {
-  const { database, username, password, host, port, dialect } = config[envv];
-  sequelize = new Sequelize(database, username, password, {
-    host,
-    port,
-    dialect,
-    logging: false
-  });
+else if(envv === "test") {
+  sequelize=new Sequelize(config[envv]);
 }
+else {
+    let params = config[envv];
+    params["host"] = process.env.RDS_DB_HOST;
+    params["username"]= process.env.RDS_DB_USERNAME;
+    params["password"] = process.env.RDS_DB_PASSWORD;
 
+    console.log("the params for sequelize: "+ JSON.stringify(params));
+    console.log("verfying the host : ", process.env.RDS_DB_HOST);
+    sequelize=new Sequelize(params);
+}
 sequelize.addModels([Admins, Elections, Questions, Answers, Voters]);
 
 const app: Express = express();

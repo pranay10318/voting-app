@@ -20,7 +20,7 @@ services:
     build:
       context: .
       target: dev
-    image: voting-app1:development
+    image: pranay:latest
     volumes:
       - .:/app
     ports:

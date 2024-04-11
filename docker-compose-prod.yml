@@ -4,7 +4,7 @@ services:
     build:
       context: .
       target: production
-    image: voting-app:prod]
+    image: voting-app:prod
     volumes:
       - .:/app
     ports:

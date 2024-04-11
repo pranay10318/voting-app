@@ -36,10 +36,10 @@ jobs:
 
       - name: Run the Application
         run: |
-          npm install
-          npx sequelize-cli db:drop
-          npx sequelize-cli db:create
-          npx sequelize-cli db:migrate
+          npm install 
+          NODE_ENV=test npx sequelize-cli db:drop
+          NODE_ENV=test npx sequelize-cli db:create
+          NODE_ENV=test npx sequelize-cli db:migrate
           PORT=3000 NODE_ENV=test npx ts-node src/index.ts &
           sleep 5
 
@@ -83,6 +83,9 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: pranay
         IMAGE_TAG: ${{ github.sha }}
+        RDS_DB_HOST: ${{ secrets.RDS_DB_HOST }}
+        RDS_DB_USERNAME: ${{ secrets.RDS_DB_USERNAME }}
+        RDS_DB_PASSWORD: ${{ secrets.RDS_DB_PASSWORD }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest

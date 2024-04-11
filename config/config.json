@@ -1,26 +1,38 @@
 {
-  "development": {
-    "username": "postgres",
-    "password": "postgres",
-    "database": "vote-db",
-    "host": "127.0.0.1",
-    "port": 5432,
-    "dialect": "postgres"
-  },
   "test": {
     "username": "postgres",
     "password": "postgres",
-    "database": "vote-test-db",
+    "database": "vote_app_db",
     "host": "localhost",
     "port": 5432,
     "dialect": "postgres"
   },
-  "production": {
+  "development": {
+    "database": "voting_app_db",
     "username": "postgres",
     "password": "postgres",
-    "database": "vote-prod-db",
     "host": "localhost",
     "port": 5432,
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  },
+  "production": {
+    "database": "voting_app_db",
+    "username": "postgres",
+    "password": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   }
 }
