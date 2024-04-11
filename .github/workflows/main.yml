@@ -51,14 +51,14 @@ jobs:
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
-                -d '{"content":"**Pipeline is Passed**"}' \
+                -d '{"content":"**Test stage is Passed **"}' \
                 ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Send Failure Notification
         if: failure()
         run: |
           curl -H "Content-Type: application/json" \
-                -d '{"content":"**Pipeline is Failed**"}' \
+                -d '{"content":"**Test Stage is Failed**"}' \
                 ${{ secrets.DISCORD_WEBHOOK }}
   build-and-push:
     runs-on: ubuntu-latest
@@ -97,3 +97,19 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: "ap-southeast-2"
+    
+    
+    # error reporting
+    - name: Send Success Notification
+      if: success()
+      run: |
+        curl -H "Content-Type: application/json" \
+              -d '{"content":"** Application is successfully deployed to ECS **"}' \
+              ${{ secrets.DISCORD_WEBHOOK }}
+
+    - name: Send Failure Notification
+      if: failure()
+      run: |
+        curl -H "Content-Type: application/json" \
+              -d '{"content":"** There is some issue with the deployment.. **"}' \
+              ${{ secrets.DISCORD_WEBHOOK }}

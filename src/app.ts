@@ -37,9 +37,10 @@ else if(envv === "test") {
 }
 else {
     let params = config[envv];
-    params["host"] = process.env.RDS_DB_HOST;
-    params["username"]= process.env.RDS_DB_USERNAME;
-    params["password"] = process.env.RDS_DB_PASSWORD;
+
+    params["host"] = process.env.RDS_DB_HOST || params["host"];
+    params["username"]= process.env.RDS_DB_USERNAME || params["username"];
+    params["password"] = process.env.RDS_DB_PASSWORD || params["password"];
 
     console.log("the params for sequelize: "+ JSON.stringify(params));
     console.log("verfying the host : ", process.env.RDS_DB_HOST);
