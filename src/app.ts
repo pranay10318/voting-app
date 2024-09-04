@@ -9,7 +9,7 @@ import passport from "passport";
 import connectEnsureLogin from "connect-ensure-login";
 import session from "express-session";
 import { Strategy as LocalStrategy } from "passport-local";
-import * as bcrypt from 'bcryptjs';
+const bcrypt: any = require("bcrypt");
 import flash from "connect-flash";
 dotenv.config();
 
@@ -21,31 +21,26 @@ import Answers from "../models/Answers";
 import { assert } from "console";
 import Voters from "../models/Voters";
 const config = require(".././config/config.json");
-const envv = (process.env.NODE_ENV == undefined) ? "development": process.env.NODE_ENV;
-console.log("The Application has been started in ", envv);
+const env = process.env.NODE_ENV || "development";
 
 let sequelize: Sequelize;
-if(config[envv]?.use_env_variable){
-  const connectionString = process.env[config[envv]?.use_env_variable];
+if(config[env].use_env_variable){
+  const connectionString = process.env[config[env].use_env_variable];
   if (!connectionString) {
-    throw new Error(`Environment variable ${config[envv]?.use_env_variable} is not set`);
+    throw new Error(`Environment variable ${config[env].use_env_variable} is not set`);
   }
-  sequelize = new Sequelize(connectionString, config[envv]);
-}
-else if(envv === "test") {
-  sequelize=new Sequelize(config[envv]);
+  sequelize = new Sequelize(connectionString, config[env]);
 }
 else {
-    let params = config[envv];
-
-    params["host"] = process.env.RDS_DB_HOST || params["host"];
-    params["username"]= process.env.RDS_DB_USERNAME || params["username"];
-    params["password"] = process.env.RDS_DB_PASSWORD || params["password"];
-
-    console.log("the params for sequelize: "+ JSON.stringify(params));
-    console.log("verfying the host : ", process.env.RDS_DB_HOST);
-    sequelize=new Sequelize(params);
+  const { database, username, password, host, port, dialect } = config[env];
+  sequelize = new Sequelize(database, username, password, {
+    host,
+    port,
+    dialect,
+    logging: false
+  });
 }
+
 sequelize.addModels([Admins, Elections, Questions, Answers, Voters]);
 
 const app: Express = express();
@@ -1039,7 +1034,7 @@ app.delete(
 );
 
 app.get("/testDelete", async (request: Request, response: Response) => {
-    if(envv == "development") {
+    if(env == "development") {
       response.send("sORRY!!! Test delete is only available");
       return;
     }
@@ -1054,6 +1049,13 @@ app.get("/testDelete", async (request: Request, response: Response) => {
       });
       response.send("Test delete done");
     }
+});
+
+app.get("/test-diff-coverage", ()=>{
+  let a = 10;
+  let b = 20;
+  let c = a+b;
+  console.log(c);
 });
 
 
