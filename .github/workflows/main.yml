@@ -1,6 +1,6 @@
 name: Voting Application
 on:
-  push:
+  pull_request:
     branches:
       - main
 
