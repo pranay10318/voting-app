@@ -1,0 +1,6 @@
+coverage:
+  precision: 2
+  round: down
+  threshold:
+    branch: 70
+    patch: 90
