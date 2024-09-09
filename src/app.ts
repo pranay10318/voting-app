@@ -1056,5 +1056,24 @@ app.get("/testDelete", async (request: Request, response: Response) => {
     }
 });
 
+app.get("/test-diff-coverage", ()=>{
+  let a = 10;
+  let b = 20;
+  let c = a+b;
+  console.log(c);
+});
+
+app.get("/test-diff-coverage1", ()=>{
+  let a = 10;
+  let b = 20;
+  let c = a+b;
+  console.log(c);
+});
+app.get("/test-diff-coverage2", ()=>{
+  let a = 10;
+  let b = 20;
+  let c = a+b;
+  console.log(c);
+});
 
 export default app;
