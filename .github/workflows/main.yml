@@ -45,6 +45,7 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.COVERALLS_TOKEN }}
+          
 
       - name: Run the Application
         run: |
